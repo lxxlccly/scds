@@ -116,19 +116,19 @@ class PoetGame(object):
                 if sentence_amount != 0:
                     random_sentence = random.randint(0, sentence_amount - 1)
                     sentences = re.findall(r'[\u4E00-\u9FA5]+', self.all_poet[random_poet]['paragraphs'][random_sentence])
-                    i = 0
-                    while len_disturb > 4:
-                        if sentences[0][i] not in self.questions[number]:
-                            self.questions[number].append(sentences[0][i])
-                            len_disturb -= 1
-                        i += 1
-                    i = 0
-                    while len_disturb > 0:
-                        if sentences[1][i] not in self.questions[number]:
-                            self.questions[number].append(sentences[1][i])
-                            len_disturb -= 1
-                        i += 1
-                    break
+                    if len(sentences) > 0:
+                        i = 0
+                        j = 0
+                        while len_disturb != 0:
+                            if i >= len(sentences[0]) or j == 4:
+                                break
+                            if sentences[0][i] not in self.questions[number]:
+                                self.questions[number].append(sentences[0][i])
+                                len_disturb -= 1
+                                j += 1
+                            i += 1
+                        if len_disturb == 0:
+                            break
 
     def get_question(self, number):
         '''获得题目'''

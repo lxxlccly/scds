@@ -157,6 +157,7 @@ class ClickPoet(object):
             self.click_state = [0] * 12
             self.question_number = i
             self.click_poet.get_question(i)
+            print(self.click_poet.right_answer[i])
             while not self.exiting:
                 end_time = time.time()
                 if end_time - start_time > self.time_limit or self.exiting == 1 or self.see_answer == 1 or\
@@ -189,11 +190,14 @@ class ClickPoet(object):
                 label0 = tkinter.Label(self.click_poet_interface, text='上一题回答正确', font=("宋体", 12), bg='green')
             else:
                 label0 = tkinter.Label(self.click_poet_interface, text='上一题回答错误', font=("宋体", 12), bg='red')
-            label0.place(relwidth=0.49, relheight=0.08, relx=0, rely=0.01)
+            label0.place(relwidth=0.4, relheight=0.08, relx=0, rely=0.01)
         grade = self.right_amount / self.click_poet.question_amount * 100
         score = '当前得分为：{0:.1f}分'.format(grade)
         label2 = tkinter.Label(self.click_poet_interface, text=score, font=("宋体", 12))
-        label2.place(relwidth=0.49, relheight=0.08, relx=0.51, rely=0.01)
+        label2.place(relwidth=0.4, relheight=0.08, relx=0.4, rely=0.01)
+        next_question = tkinter.Button(self.click_poet_interface, text='下一题', font=('楷体', 18),
+                                       activeforeground='red', command=self.next_question_response)
+        next_question.place(relwidth=0.2, relheight=0.08, relx=0.8, rely=0.01)
         for i in range(3):
             for j in range(4):
                 index = i * 4 + j
@@ -202,7 +206,7 @@ class ClickPoet(object):
                                       text=self.click_poet.questions[self.question_number][index],
                                       activeforeground='green',
                                       command=lambda index0=i, index1=j: self.word_response(index0, index1))
-                word.place(relwidth=0.1, relheight=0.1, relx=0.12+0.22*j, rely=0.1+0.2*i)
+                word.place(relwidth=0.1, relheight=0.1, relx=0.12+0.22*j, rely=0.12+0.2*i)
         label = tkinter.Label(self.click_poet_interface, text="请点击上方的字进行回答：", font=("宋体", 18))
         label.place(relwidth=0.7, relheight=0.1, relx=0, rely=0.65)
         see_right_answer = tkinter.Button(self.click_poet_interface, text='查看答案', font=('楷体', 18),
@@ -231,6 +235,10 @@ class ClickPoet(object):
                                                   '》的：' + self.click_poet.right_answer[self.question_number],
                                      bg='green', fg='white', font=('Arial', 12), width=60, height=2)
         word_display.place(relwidth=1, relheight=0.6, relx=0, rely=0.2)
+        self.see_answer = 1
+        self.click_poet_interface.destroy()
+
+    def next_question_response(self):
         self.see_answer = 1
         self.click_poet_interface.destroy()
 
