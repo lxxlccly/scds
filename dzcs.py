@@ -20,6 +20,7 @@ class PoetGame(object):
         self.questions = []
         self.poet_number = []
         self.all_poet = []
+        self.poet_name = []
 
     def start(self):
         '''开始游戏。'''
@@ -90,6 +91,7 @@ class PoetGame(object):
             random_sentence = random.randint(0, len(sentences) - 1)
         sentence = sentences[random_sentence]
         self.right_answer.append(sentence)
+        self.poet_name.append(self.all_poet[self.poet_number[len(self.poet_number) - 1]]['chapter'])
         words = re.findall(r'[\u4E00-\u9FA5]', sentence)
         self.questions.append(words)
 

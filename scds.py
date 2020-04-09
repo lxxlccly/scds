@@ -286,6 +286,7 @@ class ClickPoet(object):
         self.answers = [''] * self.click_poet.question_amount
         self.click_state = [0] * 12
         self.right_amount = 0
+        self.see_answer = 0
 
     def run(self):
         '''点字成诗运行函数'''
@@ -294,12 +295,13 @@ class ClickPoet(object):
         start_time = time.time()
         end_time = 0
         for i in range(self.click_poet.question_amount):
+            self.see_answer = 0
             self.click_state = [0] * 12
             self.question_number = i
             self.click_poet.get_question(i)
             while not self.exiting:
                 end_time = time.time()
-                if end_time - start_time > self.time_limit or self.exiting == 1 or \
+                if end_time - start_time > self.time_limit or self.exiting == 1 or self.see_answer == 1 or\
                         len(self.click_poet.right_answer[i]) == len(self.answers[i]):
                     break
                 self.click_poet_display()
@@ -387,7 +389,10 @@ class ClickPoet(object):
                                 activeforeground='green', command=self.word12_response)
         word12.place(relwidth=0.1, relheight=0.1, relx=0.78, rely=0.5)
         label = tkinter.Label(self.click_poet_interface, text="请点击上方的字进行回答：", font=("宋体", 18))
-        label.place(relwidth=0.8, relheight=0.1, relx=0, rely=0.65)
+        label.place(relwidth=0.7, relheight=0.1, relx=0, rely=0.65)
+        see_right_answer = tkinter.Button(self.click_poet_interface, text='查看答案', font=('楷体', 18),
+                                          activeforeground='red', command=self.show_right_answer)
+        see_right_answer.place(relwidth=0.3, relheight=0.1, relx=0.35, rely=0.9)
         label2 = tkinter.Label(self.click_poet_interface, text=self.answers[self.question_number],
                                font=("宋体", 18), bg='white', anchor='w', justify='left')
         label2.place(relwidth=0.7, relheight=0.1, relx=0.05, rely=0.76)
@@ -402,6 +407,17 @@ class ClickPoet(object):
         back0.place(relwidth=0.3, relheight=0.1, relx=0, rely=0.9)
         self.click_poet_interface.protocol("WM_DELETE_WINDOW", self.exit_click_poet)
         self.click_poet_interface.mainloop()
+
+    def show_right_answer(self):
+        window = tkinter.Tk()
+        window.title('你说我猜')
+        window.geometry('500x150+450+200')
+        word_display = tkinter.Label(window, text='来自《' + self.click_poet.poet_name[self.question_number] +
+                                                  '》的：' + self.click_poet.right_answer[self.question_number],
+                                     bg='green', fg='white', font=('Arial', 12), width=60, height=2)
+        word_display.place(x=250, y=75, anchor='s')
+        self.see_answer = 1
+        self.click_poet_interface.destroy()
 
     def exit_click_poet(self):
         '''点字成诗界面的退出游戏函数'''
