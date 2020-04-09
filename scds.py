@@ -346,11 +346,14 @@ class YouSayIGuess(object):
                 label0 = tkinter.Label(self.guess_interface, text='上一题回答正确', font=("宋体", 12), bg='green')
             else:
                 label0 = tkinter.Label(self.guess_interface, text='上一题回答错误', font=("宋体", 12), bg='red')
-            label0.place(relwidth=0.49, relheight=0.08, relx=0, rely=0.01)
+            label0.place(relwidth=0.4, relheight=0.08, relx=0, rely=0.01)
         grade = self.right_amount / self.question_amount * 100
         score = '当前得分为：{0:.1f}分'.format(grade)
+        next_question = tkinter.Button(self.guess_interface, text='下一题', font=('楷体', 18),
+                                       activeforeground='red', command=self.next_question_response)
+        next_question.place(relwidth=0.2, relheight=0.08, relx=0.8, rely=0.01)
         label1 = tkinter.Label(self.guess_interface, text=score, font=("宋体", 12))
-        label1.place(relwidth=0.49, relheight=0.08, relx=0.51, rely=0.01)
+        label1.place(relwidth=0.4, relheight=0.08, relx=0.4, rely=0.01)
         label2 = tkinter.Label(self.guess_interface, text=self.questions[self.question_number],
                                font=("宋体", 18), wraplength=360)
         label2.place(relwidth=1, relheight=0.3, relx=0, rely=0.2)
@@ -402,6 +405,10 @@ class YouSayIGuess(object):
         back0.place(relwidth=0.3, relheight=0.1, relx=0, rely=0.85)
         self.guess_interface.protocol("WM_DELETE_WINDOW", self.exit_guess)
         self.guess_interface.mainloop()
+
+    def next_question_response(self):
+        self.see_answer = 1
+        self.guess_interface.destroy()
 
     def show_right_answer(self):
         window = tkinter.Tk()
