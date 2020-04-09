@@ -1,5 +1,6 @@
 '''诗词大赛主程序'''
 import time
+import re
 import tkinter
 import ckcs
 import dzcs
@@ -321,6 +322,7 @@ class YouSayIGuess(object):
             self.see_answer = 0
             self.question_number = i
             word, name, sentence = 数据库调用.CallMySql2()  # 这里用方法给word name sentence赋值即可
+            print(sentence)
             self.questions.append(word)
             self.right_answer.append([name, sentence])
             while not self.exiting:
@@ -331,7 +333,8 @@ class YouSayIGuess(object):
                 self.guess_display()
             if end_time - start_time > self.time_limit or self.exiting == 1:
                 break
-            if self.answers[i] == self.right_answer[i]:
+            if re.findall(r'[\u4E00-\u9FA5]+', self.answers[i]) == re.findall(r'[\u4E00-\u9FA5]+',
+                                                                              self.right_answer[i][1]):
                 self.right_amount += 1
         if self.exiting == 0:
             self.show_grade()
@@ -342,7 +345,8 @@ class YouSayIGuess(object):
         self.guess_interface.title("你说我猜")
         self.guess_interface.geometry("400x400+500+150")
         if self.question_number > 0:
-            if self.answers[self.question_number - 1] == self.right_answer[self.question_number - 1]:
+            if re.findall(r'[\u4E00-\u9FA5]+', self.answers[self.question_number - 1]) == re.findall(
+                    r'[\u4E00-\u9FA5]+', self.right_answer[self.question_number - 1][1]):
                 label0 = tkinter.Label(self.guess_interface, text='上一题回答正确', font=("宋体", 12), bg='green')
             else:
                 label0 = tkinter.Label(self.guess_interface, text='上一题回答错误', font=("宋体", 12), bg='red')
@@ -357,8 +361,8 @@ class YouSayIGuess(object):
         label2 = tkinter.Label(self.guess_interface, text=self.questions[self.question_number],
                                font=("宋体", 18), wraplength=360)
         label2.place(relwidth=1, relheight=0.3, relx=0, rely=0.2)
-        label3 = tkinter.Label(self.guess_interface, text="猜出上方诗句的题目：", font=("宋体", 18))
-        label3.place(relwidth=0.7, relheight=0.1, relx=0, rely=0.6)
+        label3 = tkinter.Label(self.guess_interface, text="猜出上方内容所描述的诗句：", font=("宋体", 18))
+        label3.place(relwidth=0.8, relheight=0.1, relx=0, rely=0.6)
         self.answer = tkinter.Entry(self.guess_interface, font=("宋体", 14))
         self.answer.place(relwidth=0.7, relheight=0.1, relx=0, rely=0.7)
         submit_button = tkinter.Button(self.guess_interface, text='提交', font=('楷体', 18),

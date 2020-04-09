@@ -15,7 +15,7 @@ def CallMySql():
 
     poetry_len = int((len(poetry) - 2)/2)
     key = random.randint(1,poetry_len)
-    print(poetry)
+    #print(poetry)
     sentence = poetry['sentense_'+str(key)]
     seg_sentence = jieba.cut(sentence, cut_all=False)
     seg_sentence = list(seg_sentence)
@@ -32,11 +32,16 @@ def CallMySql2():
     cur.execute(sql)
     poetry = cur.fetchall()
     poetry = poetry[0]
-    # print(poetry)
     poetry = {i:poetry[i] for i in poetry if poetry[i] != 'NULL'}
-    print(poetry)
-    poetry_len = int((len(poetry) - 2)/2)
-    key = random.randint(1,poetry_len)
+    poetry_len = 0
+    for i in range(10):
+        sentence = 'sentense_' + str(i + 1)
+        if sentence in poetry:
+            poetry_len += 1
+    while 1:
+        key = random.randint(1,poetry_len)
+        if 'sentense_' + str(key) in poetry and 'yiwen_' + str(key) in poetry:
+            break
 
     # return key_word,random_poetry['name'],sentence
     return poetry['yiwen_'+str(key)],poetry['name'],poetry['sentense_'+str(key)]
