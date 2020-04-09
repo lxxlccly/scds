@@ -322,7 +322,7 @@ class YouSayIGuess(object):
             self.question_number = i
             word, name, sentence = 数据库调用.CallMySql2()  # 这里用方法给word name sentence赋值即可
             self.questions.append(word)
-            self.right_answer.append(name)
+            self.right_answer.append([name, sentence])
             while not self.exiting:
                 end_time = time.time()
                 if end_time - start_time > self.time_limit or self.exiting == 1 or self.see_answer == 1 or \
@@ -414,8 +414,8 @@ class YouSayIGuess(object):
         window = tkinter.Tk()
         window.title('你说我猜')
         window.geometry('500x150+450+200')
-        word_display = tkinter.Label(window, text='来自《' + self.right_answer[self.question_number] +
-                                                  '》的：' + self.questions[self.question_number],
+        word_display = tkinter.Label(window, text='来自《' + self.right_answer[self.question_number][0] +
+                                                  '》的：' + self.right_answer[self.question_number][1],
                                      bg='green', fg='white', font=('Arial', 12), wraplength=360)
         word_display.place(relwidth=1, relheight=0.6, relx=0, rely=0.2)
         self.see_answer = 1

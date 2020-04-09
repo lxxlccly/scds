@@ -29,6 +29,11 @@ class WordCreate():
                 self.sc_list.append(weak_list)
         # print(self.sc_list)
     def OperationSql(self):
+        '''
+        这部分为导入数据库中，num是给古诗数量编的一个号码，
+        总共两次爬取400多首诗还有两个文件爬的译文，分别对应好的
+        下面导入sql部分是更新语句，初次导入可能还要做修改
+        '''
         num=130
         for i in self.sc_list:
             for _ in range(62-len(i)):  #导入诗词为62 导入赏析为61
