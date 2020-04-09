@@ -35,96 +35,32 @@ class SayPoet(object):
         if self.exiting == 0:
             self.show_grade()
 
+    def word_response(self, index0, index1):
+        '''点击单词的响应'''
+        index = index0 * 3 + index1
+        if self.answering_state[index] == 0:
+            for i in range(self.say_poet.question_amount):
+                if self.answering_state[i] == 1:
+                    self.answering_state[i] = 0
+            self.say_poet_interface.destroy()
+            self.answering_state[index] = 1
+
     def say_poet_display(self):
         '''出口成诗界面'''
         background_color = ['skyblue', 'green', 'grey']
         self.say_poet_interface = tkinter.Tk()
         self.say_poet_interface.title("出口成诗")
         self.say_poet_interface.geometry("400x400+500+150")
-        question_button1 = tkinter.Button(self.say_poet_interface,
-                                          text=self.say_poet.questions[0],
-                                          bg=background_color[self.answering_state[0]],
-                                          font=('楷体', 18),
-                                          activeforeground='green',
-                                          command=self.button1_response)
-        question_button1.place(relwidth=0.3, relheight=0.1, relx=0, rely=0.02)
-        question_button2 = tkinter.Button(self.say_poet_interface,
-                                          text=self.say_poet.questions[1],
-                                          bg=background_color[self.answering_state[1]],
-                                          font=('楷体', 18),
-                                          activeforeground='green',
-                                          command=self.button2_response)
-        question_button2.place(relwidth=0.3, relheight=0.1, relx=0.35, rely=0.02)
-        question_button3 = tkinter.Button(self.say_poet_interface,
-                                          text=self.say_poet.questions[2],
-                                          bg=background_color[self.answering_state[2]],
-                                          font=('楷体', 18),
-                                          activeforeground='green',
-                                          command=self.button3_response)
-        question_button3.place(relwidth=0.3, relheight=0.1, relx=0.7, rely=0.02)
-        question_button4 = tkinter.Button(self.say_poet_interface,
-                                          text=self.say_poet.questions[3],
-                                          bg=background_color[self.answering_state[3]],
-                                          font=('楷体', 18),
-                                          activeforeground='green',
-                                          command=self.button4_response)
-        question_button4.place(relwidth=0.3, relheight=0.1, relx=0, rely=0.14)
-        question_button5 = tkinter.Button(self.say_poet_interface,
-                                          text=self.say_poet.questions[4],
-                                          bg=background_color[self.answering_state[4]],
-                                          font=('楷体', 18),
-                                          activeforeground='green',
-                                          command=self.button5_response)
-        question_button5.place(relwidth=0.3, relheight=0.1, relx=0.35, rely=0.14)
-        question_button6 = tkinter.Button(self.say_poet_interface,
-                                          text=self.say_poet.questions[5],
-                                          bg=background_color[self.answering_state[5]],
-                                          font=('楷体', 18),
-                                          activeforeground='green',
-                                          command=self.button6_response)
-        question_button6.place(relwidth=0.3, relheight=0.1, relx=0.7, rely=0.14)
-        question_button7 = tkinter.Button(self.say_poet_interface,
-                                          text=self.say_poet.questions[6],
-                                          bg=background_color[self.answering_state[6]],
-                                          font=('楷体', 18),
-                                          activeforeground='green',
-                                          command=self.button7_response)
-        question_button7.place(relwidth=0.3, relheight=0.1, relx=0, rely=0.26)
-        question_button8 = tkinter.Button(self.say_poet_interface,
-                                          text=self.say_poet.questions[7],
-                                          bg=background_color[self.answering_state[7]],
-                                          font=('楷体', 18),
-                                          activeforeground='green',
-                                          command=self.button8_response)
-        question_button8.place(relwidth=0.3, relheight=0.1, relx=0.35, rely=0.26)
-        question_button9 = tkinter.Button(self.say_poet_interface,
-                                          text=self.say_poet.questions[8],
-                                          bg=background_color[self.answering_state[8]],
-                                          font=('楷体', 18),
-                                          activeforeground='green',
-                                          command=self.button9_response)
-        question_button9.place(relwidth=0.3, relheight=0.1, relx=0.7, rely=0.26)
-        question_button10 = tkinter.Button(self.say_poet_interface,
-                                           text=self.say_poet.questions[9],
-                                           bg=background_color[self.answering_state[9]],
-                                           font=('楷体', 18),
-                                           activeforeground='green',
-                                           command=self.button10_response)
-        question_button10.place(relwidth=0.3, relheight=0.1, relx=0, rely=0.38)
-        question_button11 = tkinter.Button(self.say_poet_interface,
-                                           text=self.say_poet.questions[10],
-                                           bg=background_color[self.answering_state[10]],
-                                           font=('楷体', 18),
-                                           activeforeground='green',
-                                           command=self.button11_response)
-        question_button11.place(relwidth=0.3, relheight=0.1, relx=0.35, rely=0.38)
-        question_button12 = tkinter.Button(self.say_poet_interface,
-                                           text=self.say_poet.questions[11],
-                                           bg=background_color[self.answering_state[11]],
-                                           font=('楷体', 18),
-                                           activeforeground='green',
-                                           command=self.button12_response)
-        question_button12.place(relwidth=0.3, relheight=0.1, relx=0.7, rely=0.38)
+        for i in range(4):
+            for j in range(3):
+                index = i * 3 + j
+                question_button = tkinter.Button(self.say_poet_interface,
+                                                 text=self.say_poet.questions[index],
+                                                 bg=background_color[self.answering_state[index]],
+                                                 font=('楷体', 18),
+                                                 activeforeground='green',
+                                                 command=lambda index0=i, index1=j: self.word_response(index0, index1))
+                question_button.place(relwidth=0.3, relheight=0.1, relx=0+0.35*j, rely=0.02+0.12*i)
         label = tkinter.Label(self.say_poet_interface, text="请输入答案：", font=("宋体", 18))
         label.place(relwidth=0.37, relheight=0.1, relx=0, rely=0.5)
         self.answer = tkinter.Entry(self.say_poet_interface, font=("宋体", 14))
@@ -197,85 +133,6 @@ class SayPoet(object):
         self.say_poet_interface.destroy()
         self.exiting = 1
 
-    def clear_select_state(self):
-        '''清除选中的状态'''
-        for i in range(self.say_poet.question_amount):
-            if self.answering_state[i] == 1:
-                self.answering_state[i] = 0
-        self.say_poet_interface.destroy()
-
-    def button1_response(self):
-        '''点击第一个单词的响应'''
-        if self.answering_state[0] == 0:
-            self.clear_select_state()
-            self.answering_state[0] = 1
-
-    def button2_response(self):
-        '''点击第二个单词的响应'''
-        if self.answering_state[1] == 0:
-            self.clear_select_state()
-            self.answering_state[1] = 1
-
-    def button3_response(self):
-        '''点击第三个单词的响应'''
-        if self.answering_state[2] == 0:
-            self.clear_select_state()
-            self.answering_state[2] = 1
-
-    def button4_response(self):
-        '''点击第四个单词的响应'''
-        if self.answering_state[3] == 0:
-            self.clear_select_state()
-            self.answering_state[3] = 1
-
-    def button5_response(self):
-        '''点击第五个单词的响应'''
-        if self.answering_state[4] == 0:
-            self.clear_select_state()
-            self.answering_state[4] = 1
-
-    def button6_response(self):
-        '''点击第六个单词的响应'''
-        if self.answering_state[5] == 0:
-            self.clear_select_state()
-            self.answering_state[5] = 1
-
-    def button7_response(self):
-        '''点击第七个单词的响应'''
-        if self.answering_state[6] == 0:
-            self.clear_select_state()
-            self.answering_state[6] = 1
-
-    def button8_response(self):
-        '''点击第八个单词的响应'''
-        if self.answering_state[7] == 0:
-            self.clear_select_state()
-            self.answering_state[7] = 1
-
-    def button9_response(self):
-        '''点击第九个单词的响应'''
-        if self.answering_state[8] == 0:
-            self.clear_select_state()
-            self.answering_state[8] = 1
-
-    def button10_response(self):
-        '''点击第十个单词的响应'''
-        if self.answering_state[9] == 0:
-            self.clear_select_state()
-            self.answering_state[9] = 1
-
-    def button11_response(self):
-        '''点击第十一个单词的响应'''
-        if self.answering_state[10] == 0:
-            self.clear_select_state()
-            self.answering_state[10] = 1
-
-    def button12_response(self):
-        '''点击第十二个单词的响应'''
-        if self.answering_state[11] == 0:
-            self.clear_select_state()
-            self.answering_state[11] = 1
-
 
 class ClickPoet(object):
     def __init__(self):
@@ -313,6 +170,14 @@ class ClickPoet(object):
         if self.exiting == 0:
             self.show_grade()
 
+    def word_response(self, index0, index1):
+        '''字的响应函数'''
+        index = index0 * 4 + index1
+        if self.click_state[index] == 0:
+            self.answers[self.question_number] += self.click_poet.questions[self.question_number][index]
+            self.click_state[index] = 1
+            self.click_poet_interface.destroy()
+
     def click_poet_display(self):
         '''点字成诗界面'''
         background_color = ['skyblue', 'grey']
@@ -329,66 +194,15 @@ class ClickPoet(object):
         score = '当前得分为：{0:.1f}分'.format(grade)
         label2 = tkinter.Label(self.click_poet_interface, text=score, font=("宋体", 12))
         label2.place(relwidth=0.49, relheight=0.08, relx=0.51, rely=0.01)
-        word1 = tkinter.Button(self.click_poet_interface, font=('楷体', 18),
-                               bg=background_color[self.click_state[0]],
-                               text=self.click_poet.questions[self.question_number][0],
-                               activeforeground='green', command=self.word1_response)
-        word1.place(relwidth=0.1, relheight=0.1, relx=0.12, rely=0.1)
-        word2 = tkinter.Button(self.click_poet_interface, font=('楷体', 18),
-                               bg=background_color[self.click_state[1]],
-                               text=self.click_poet.questions[self.question_number][1],
-                               activeforeground='green', command=self.word2_response)
-        word2.place(relwidth=0.1, relheight=0.1, relx=0.34, rely=0.1)
-        word3 = tkinter.Button(self.click_poet_interface, font=('楷体', 18),
-                               bg=background_color[self.click_state[2]],
-                               text=self.click_poet.questions[self.question_number][2],
-                               activeforeground='green', command=self.word3_response)
-        word3.place(relwidth=0.1, relheight=0.1, relx=0.56, rely=0.1)
-        word4 = tkinter.Button(self.click_poet_interface, font=('楷体', 18),
-                               bg=background_color[self.click_state[3]],
-                               text=self.click_poet.questions[self.question_number][3],
-                               activeforeground='green', command=self.word4_response)
-        word4.place(relwidth=0.1, relheight=0.1, relx=0.78, rely=0.1)
-        word5 = tkinter.Button(self.click_poet_interface, font=('楷体', 18),
-                               bg=background_color[self.click_state[4]],
-                               text=self.click_poet.questions[self.question_number][4],
-                               activeforeground='green', command=self.word5_response)
-        word5.place(relwidth=0.1, relheight=0.1, relx=0.12, rely=0.3)
-        word6 = tkinter.Button(self.click_poet_interface, font=('楷体', 18),
-                               bg=background_color[self.click_state[5]],
-                               text=self.click_poet.questions[self.question_number][5],
-                               activeforeground='green', command=self.word6_response)
-        word6.place(relwidth=0.1, relheight=0.1, relx=0.34, rely=0.3)
-        word7 = tkinter.Button(self.click_poet_interface, font=('楷体', 18),
-                               bg=background_color[self.click_state[6]],
-                               text=self.click_poet.questions[self.question_number][6],
-                               activeforeground='green', command=self.word7_response)
-        word7.place(relwidth=0.1, relheight=0.1, relx=0.56, rely=0.3)
-        word8 = tkinter.Button(self.click_poet_interface, font=('楷体', 18),
-                               bg=background_color[self.click_state[7]],
-                               text=self.click_poet.questions[self.question_number][7],
-                               activeforeground='green', command=self.word8_response)
-        word8.place(relwidth=0.1, relheight=0.1, relx=0.78, rely=0.3)
-        word9 = tkinter.Button(self.click_poet_interface, font=('楷体', 18),
-                               bg=background_color[self.click_state[8]],
-                               text=self.click_poet.questions[self.question_number][8],
-                               activeforeground='green', command=self.word9_response)
-        word9.place(relwidth=0.1, relheight=0.1, relx=0.12, rely=0.5)
-        word10 = tkinter.Button(self.click_poet_interface, font=('楷体', 18),
-                                bg=background_color[self.click_state[9]],
-                                text=self.click_poet.questions[self.question_number][9],
-                                activeforeground='green', command=self.word10_response)
-        word10.place(relwidth=0.1, relheight=0.1, relx=0.34, rely=0.5)
-        word11 = tkinter.Button(self.click_poet_interface, font=('楷体', 18),
-                                bg=background_color[self.click_state[10]],
-                                text=self.click_poet.questions[self.question_number][10],
-                                activeforeground='green', command=self.word11_response)
-        word11.place(relwidth=0.1, relheight=0.1, relx=0.56, rely=0.5)
-        word12 = tkinter.Button(self.click_poet_interface, font=('楷体', 18),
-                                bg=background_color[self.click_state[11]],
-                                text=self.click_poet.questions[self.question_number][11],
-                                activeforeground='green', command=self.word12_response)
-        word12.place(relwidth=0.1, relheight=0.1, relx=0.78, rely=0.5)
+        for i in range(3):
+            for j in range(4):
+                index = i * 4 + j
+                word = tkinter.Button(self.click_poet_interface, font=('楷体', 18),
+                                      bg=background_color[self.click_state[index]],
+                                      text=self.click_poet.questions[self.question_number][index],
+                                      activeforeground='green',
+                                      command=lambda index0=i, index1=j: self.word_response(index0, index1))
+                word.place(relwidth=0.1, relheight=0.1, relx=0.12+0.22*j, rely=0.1+0.2*i)
         label = tkinter.Label(self.click_poet_interface, text="请点击上方的字进行回答：", font=("宋体", 18))
         label.place(relwidth=0.7, relheight=0.1, relx=0, rely=0.65)
         see_right_answer = tkinter.Button(self.click_poet_interface, text='查看答案', font=('楷体', 18),
@@ -416,7 +230,7 @@ class ClickPoet(object):
         word_display = tkinter.Label(window, text='来自《' + self.click_poet.poet_name[self.question_number] +
                                                   '》的：' + self.click_poet.right_answer[self.question_number],
                                      bg='green', fg='white', font=('Arial', 12), width=60, height=2)
-        word_display.place(x=250, y=75, anchor='s')
+        word_display.place(relwidth=1, relheight=0.6, relx=0, rely=0.2)
         self.see_answer = 1
         self.click_poet_interface.destroy()
 
@@ -474,61 +288,6 @@ class ClickPoet(object):
         self.click_poet_interface.protocol("WM_DELETE_WINDOW", self.exit_click_poet)
         self.click_poet_interface.mainloop()
 
-    def change_state(self, number):
-        '''改变按钮状态'''
-        if self.click_state[number] == 0:
-            self.answers[self.question_number] += self.click_poet.questions[self.question_number][number]
-            self.click_state[number] = 1
-            self.click_poet_interface.destroy()
-
-    def word1_response(self):
-        '''字1的响应函数'''
-        self.change_state(0)
-
-    def word2_response(self):
-        '''字2的响应函数'''
-        self.change_state(1)
-
-    def word3_response(self):
-        '''字3的响应函数'''
-        self.change_state(2)
-
-    def word4_response(self):
-        '''字4的响应函数'''
-        self.change_state(3)
-
-    def word5_response(self):
-        '''字5的响应函数'''
-        self.change_state(4)
-
-    def word6_response(self):
-        '''字6的响应函数'''
-        self.change_state(5)
-
-    def word7_response(self):
-        '''字7的响应函数'''
-        self.change_state(6)
-
-    def word8_response(self):
-        '''字8的响应函数'''
-        self.change_state(7)
-
-    def word9_response(self):
-        '''字9的响应函数'''
-        self.change_state(8)
-
-    def word10_response(self):
-        '''字10的响应函数'''
-        self.change_state(9)
-
-    def word11_response(self):
-        '''字11的响应函数'''
-        self.change_state(10)
-
-    def word12_response(self):
-        '''字12的响应函数'''
-        self.change_state(11)
-
 
 class YouSayIGuess(object):
     def __init__(self):
@@ -585,7 +344,7 @@ class YouSayIGuess(object):
         label1 = tkinter.Label(self.guess_interface, text=score, font=("宋体", 12))
         label1.place(relwidth=0.49, relheight=0.08, relx=0.51, rely=0.01)
         label2 = tkinter.Label(self.guess_interface, text=self.questions[self.question_number],
-                               font=("宋体", 18), wraplength=288)
+                               font=("宋体", 18), wraplength=360)
         label2.place(relwidth=1, relheight=0.3, relx=0, rely=0.2)
         label3 = tkinter.Label(self.guess_interface, text="猜出上方诗句的题目：", font=("宋体", 18))
         label3.place(relwidth=0.7, relheight=0.1, relx=0, rely=0.6)
@@ -642,7 +401,7 @@ class YouSayIGuess(object):
         window.geometry('500x150+450+200')
         word_display = tkinter.Label(window, text='来自《' + self.right_answer[self.question_number] +
                                                   '》的：' + self.questions[self.question_number],
-                                     bg='green', fg='white', font=('Arial', 12))
+                                     bg='green', fg='white', font=('Arial', 12), wraplength=360)
         word_display.place(relwidth=1, relheight=0.6, relx=0, rely=0.2)
         self.see_answer = 1
         self.guess_interface.destroy()

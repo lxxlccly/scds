@@ -2,7 +2,7 @@ import pymysql
 import random
 import jieba
 def CallMySql():
-    conn = pymysql.connect(host='localhost', port=3306, user='root', passwd='244466666',db='lsj',charset='utf8')
+    conn = pymysql.connect(host='localhost', port=3306, user='root', passwd='newbegin', db='lsj', charset='utf8') #改为自己的数据库密码
 
     cur = conn.cursor(cursor=pymysql.cursors.DictCursor)
     sql = 'select * from poetry WHERE id = {}'.format(random.randint(1,129))
@@ -24,7 +24,7 @@ def CallMySql():
     
     return key_word,poetry['name'],sentence
 def CallMySql2():
-    conn = pymysql.connect(host='localhost', port=3306, user='root', passwd='244466666',db='lsj',charset='utf8')
+    conn = pymysql.connect(host='localhost', port=3306, user='root', passwd='newbegin', db='lsj', charset='utf8') #改为自己的数据库密码
 
     cur = conn.cursor(cursor=pymysql.cursors.DictCursor)
     sql = 'select * from poetry WHERE id = {}'.format(random.randint(1,129))
