@@ -2,6 +2,7 @@
 import time
 import re
 import tkinter
+from tkinter import ttk, messagebox
 from PIL import ImageTk, Image
 import ckcs
 import dzcs
@@ -15,6 +16,7 @@ class SayPoet(object):
         self.say_poet_interface = None
         self.say_poet = ckcs.PoetGame()
         self.exiting = 0
+        self.right_amount = 0
         self.answering_state = [0] * self.say_poet.question_amount
         self.answer = None
 
@@ -57,8 +59,12 @@ class SayPoet(object):
         photo = ImageTk.PhotoImage(img)
         bg_photo = tkinter.Canvas(self.say_poet_interface, width=400, height=400)
         bg_photo.create_image(250, 300, image=photo)
-        bg_photo.create_text(150, 220, text='请选词后在下方输入答案：', fill='black', font=("宋体", 18))
+        bg_photo.create_text(150, 290, text='请选词后在下方输入答案：', fill='black', font=("宋体", 18))
         bg_photo.pack()
+        p1 = ttk.Progressbar(self.say_poet_interface, mode="determinate")
+        p1.place(relwidth=1, relheight=0.02, relx=0, rely=0.01)
+        p1["maximum"] = self.say_poet.question_amount
+        p1["value"] = self.right_amount
         for i in range(4):
             for j in range(3):
                 index = i * 3 + j
@@ -67,12 +73,12 @@ class SayPoet(object):
                                                  bg=background_color[self.answering_state[index]],
                                                  font=('楷体', 18),
                                                  command=lambda index0=i, index1=j: self.word_response(index0, index1))
-                question_button.place(relwidth=0.3, relheight=0.1, relx=0.025+0.325*j, rely=0.02+0.12*i)
+                question_button.place(relwidth=0.3, relheight=0.14, relx=0.025+0.325*j, rely=0.04+0.16*i)
         self.answer = tkinter.Entry(self.say_poet_interface, font=("宋体", 14))
-        self.answer.place(relwidth=0.8, relheight=0.1, relx=0, rely=0.6)
+        self.answer.place(relwidth=0.8, relheight=0.1, relx=0, rely=0.78)
         submit_button = tkinter.Button(self.say_poet_interface, text='提交', font=('楷体', 18), bg='springgreen',
                                        activebackground='lime', command=self.submit_response)
-        submit_button.place(relwidth=0.18, relheight=0.1, relx=0.81, rely=0.6)
+        submit_button.place(relwidth=0.18, relheight=0.1, relx=0.81, rely=0.78)
         exit0 = tkinter.Button(self.say_poet_interface, text="退出游戏", font=('楷体', 18), bg='springgreen',
                                activebackground='lime', command=self.exit_say_poet)
         exit0.place(relwidth=0.3, relheight=0.1, relx=0.7, rely=0.9)
@@ -123,6 +129,10 @@ class SayPoet(object):
         answer_right = self.say_poet.verification(number, answers)
         if answer_right:
             self.answering_state[number] = 2
+            self.right_amount += 1
+            messagebox.showinfo(message="回答正确！")
+        else:
+            messagebox.showinfo(message="回答错误！")
         self.say_poet_interface.destroy()
 
     def exit_say_poet(self):
@@ -202,11 +212,15 @@ class ClickPoet(object):
         bg_photo = tkinter.Canvas(self.click_poet_interface, width=400, height=400)
         bg_photo.create_image(250, 300, image=photo)
         bg_photo.create_text(160, 280, text='请点击上方的字凑成一句诗：', fill='black', font=("宋体", 18))
-        bg_photo.create_text(150, 20, text=score, fill='black', font=("宋体", 12))
+        bg_photo.create_text(150, 34, text=score, fill='black', font=("宋体", 12))
         bg_photo.pack()
+        p1 = ttk.Progressbar(self.click_poet_interface, mode="determinate")
+        p1.place(relwidth=1, relheight=0.02, relx=0, rely=0.01)
+        p1["maximum"] = self.click_poet.question_amount
+        p1["value"] = self.question_number + 1
         next_question = tkinter.Button(self.click_poet_interface, text='下一题', font=('楷体', 18), bg='springgreen',
                                        activebackground='lime', command=self.next_question_response)
-        next_question.place(relwidth=0.2, relheight=0.08, relx=0.8, rely=0.01)
+        next_question.place(relwidth=0.2, relheight=0.08, relx=0.8, rely=0.04)
         for i in range(3):
             for j in range(4):
                 index = i * 4 + j
@@ -215,7 +229,7 @@ class ClickPoet(object):
                                       text=self.click_poet.questions[self.question_number][index],
                                       activeforeground='green',
                                       command=lambda index0=i, index1=j: self.word_response(index0, index1))
-                word.place(relwidth=0.225, relheight=0.15, relx=0.02+0.245*j, rely=0.13+0.17*i)
+                word.place(relwidth=0.225, relheight=0.15, relx=0.02+0.245*j, rely=0.15+0.17*i)
         see_right_answer = tkinter.Button(self.click_poet_interface, text='查看答案', font=('楷体', 18),
                                           bg='springgreen', activebackground='lime', command=self.show_right_answer)
         see_right_answer.place(relwidth=0.3, relheight=0.1, relx=0.35, rely=0.9)
@@ -370,15 +384,19 @@ class YouSayIGuess(object):
         photo = ImageTk.PhotoImage(img)
         bg_photo = tkinter.Canvas(self.guess_interface, width=400, height=400)
         bg_photo.create_image(250, 300, image=photo)
-        bg_photo.create_text(150, 20, text=score, fill='black', font=("宋体", 12))
+        bg_photo.create_text(150, 34, text=score, fill='black', font=("宋体", 12))
         bg_photo.create_text(170, 260, text='请猜出上方内容所描述的诗句：', fill='black', font=("宋体", 18))
         bg_photo.pack()
+        p1 = ttk.Progressbar(self.guess_interface, mode="determinate")
+        p1.place(relwidth=1, relheight=0.02, relx=0, rely=0.01)
+        p1["maximum"] = self.question_amount
+        p1["value"] = self.question_number + 1
         label2 = tkinter.Label(self.guess_interface, text='译文：' + self.questions[self.question_number],
                                font=("宋体", 14), wraplength=360, bg='lightsteelblue')
         label2.place(relwidth=1, relheight=0.3, relx=0, rely=0.2)
         next_question = tkinter.Button(self.guess_interface, text='下一题', font=('楷体', 18), bg='springgreen',
                                        activebackground='lime', command=self.next_question_response)
-        next_question.place(relwidth=0.2, relheight=0.08, relx=0.8, rely=0.01)
+        next_question.place(relwidth=0.2, relheight=0.08, relx=0.8, rely=0.04)
         self.answer = tkinter.Entry(self.guess_interface, font=("宋体", 14))
         self.answer.place(relwidth=0.7, relheight=0.1, relx=0, rely=0.7)
         submit_button = tkinter.Button(self.guess_interface, text='提交', font=('楷体', 18), bg='springgreen',

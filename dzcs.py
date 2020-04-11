@@ -85,7 +85,7 @@ class PoetGame(object):
         random_sentence = random.randint(0, sentence_amount - 1)
         sentences = re.findall(r'[\u4E00-\u9FA5]+',
                                self.all_poet[self.poet_number[len(self.poet_number) - 1]]['paragraphs'][random_sentence])
-        if len(sentences) == 0:
+        if len(sentences) == 1:
             random_sentence = 0
         else:
             random_sentence = random.randint(0, len(sentences) - 1)
