@@ -9,6 +9,59 @@ import dzcs
 import 数据库调用
 
 
+class GradeInterface(object):
+    '''显示答案界面'''
+    def __init__(self):
+        self.grade_interface = None
+
+    def exit_grade_interface(self):
+        '''显示答案界面的退出游戏函数'''
+        global is_running
+        is_running = False
+        self.grade_interface.destroy()
+
+    def run(self, mode, question_amount, answers, right_answer=[]):
+        '''显示答案界面的运行函数'''
+        right_amounts = 0
+        conclusion = '回答情况如下：\n\n'
+        for i in range(question_amount):
+            if answers[i] != '':
+                if mode == 1:
+                    right_amounts += 1
+                    conclusion += '{0:>2}、回答正确：{1}\n'.format(i + 1, answers[i])
+                else:
+                    if answers[i] == right_answer[i]:
+                        right_amounts += 1
+                        conclusion += '{0:>2}、回答正确。\n'.format(i + 1)
+                    else:
+                        conclusion += '{0:>2}、回答错误。\n'.format(i + 1)
+            else:
+                conclusion += '{0:>2}、未回答。\n'.format(i + 1)
+        grade = right_amounts / question_amount * 100
+        score = '您的总得分为：{0:.1f}分'.format(grade)
+        self.grade_interface = tkinter.Tk()
+        self.grade_interface.title("回答情况总结")
+        self.grade_interface.geometry("400x400+500+150")
+        img = Image.open("./image/背景5.jpg")
+        photo = ImageTk.PhotoImage(img)
+        bg_photo = tkinter.Canvas(self.grade_interface, width=400, height=400)
+        bg_photo.create_image(250, 300, image=photo)
+        if mode == 1:
+            bg_photo.create_text(120, 200, text=conclusion, fill='black', font=("宋体", 14))
+        if mode == 2 or mode == 3:
+            bg_photo.create_text(80, 200, text=conclusion, fill='black', font=("宋体", 16))
+        bg_photo.create_text(120, 18, text=score, fill='black', font=("宋体", 18))
+        bg_photo.pack()
+        exit0 = tkinter.Button(self.grade_interface, text="退出游戏", font=('楷体', 18), bg='springgreen',
+                               activebackground='lime', command=self.exit_grade_interface)
+        exit0.place(relwidth=0.3, relheight=0.1, relx=0.7, rely=0.9)
+        back0 = tkinter.Button(self.grade_interface, text="返回首页", font=('楷体', 18), bg='springgreen',
+                               activebackground='lime', command=self.grade_interface.destroy)
+        back0.place(relwidth=0.3, relheight=0.1, relx=0, rely=0.9)
+        self.grade_interface.protocol("WM_DELETE_WINDOW", self.exit_grade_interface)
+        self.grade_interface.mainloop()
+
+
 class SayPoet(object):
     '''出口成诗游戏'''
     def __init__(self):
@@ -90,34 +143,8 @@ class SayPoet(object):
 
     def show_grade(self):
         '''显示回答情况和最终得分'''
-        right_amounts = 0
-        conclusion = '回答情况如下：\n\n'
-        for i in range(self.say_poet.question_amount):
-            if self.say_poet.answers[i] != '':
-                right_amounts += 1
-                conclusion += '{0:>2}、回答正确：{1}\n'.format(i + 1, self.say_poet.answers[i])
-            else:
-                conclusion += '{0:>2}、回答错误/未回答。\n'.format(i + 1)
-        self.say_poet.grade = right_amounts / self.say_poet.question_amount * 100
-        score = '您的总得分为：{0:.1f}分'.format(self.say_poet.grade)
-        self.say_poet_interface = tkinter.Tk()
-        self.say_poet_interface.title("回答情况总结")
-        self.say_poet_interface.geometry("400x400+500+150")
-        img = Image.open("./image/背景5.jpg")
-        photo = ImageTk.PhotoImage(img)
-        bg_photo = tkinter.Canvas(self.say_poet_interface, width=400, height=400)
-        bg_photo.create_image(250, 300, image=photo)
-        bg_photo.create_text(120, 200, text=conclusion, fill='black', font=("宋体", 14))
-        bg_photo.create_text(120, 18, text=score, fill='black', font=("宋体", 18))
-        bg_photo.pack()
-        exit0 = tkinter.Button(self.say_poet_interface, text="退出游戏", font=('楷体', 18), bg='springgreen',
-                               activebackground='lime', command=self.exit_say_poet)
-        exit0.place(relwidth=0.3, relheight=0.1, relx=0.7, rely=0.9)
-        back0 = tkinter.Button(self.say_poet_interface, text="返回首页", font=('楷体', 18), bg='springgreen',
-                               activebackground='lime', command=self.back_mode_selection)
-        back0.place(relwidth=0.3, relheight=0.1, relx=0, rely=0.9)
-        self.say_poet_interface.protocol("WM_DELETE_WINDOW", self.exit_say_poet)
-        self.say_poet_interface.mainloop()
+        grade_interface = GradeInterface()
+        grade_interface.run(1, self.say_poet.question_amount, self.say_poet.answers)
 
     def submit_response(self):
         '''提交回答并处理'''
@@ -294,35 +321,8 @@ class ClickPoet(object):
 
     def show_grade(self):
         '''显示回答情况和最终得分'''
-        conclusion = '回答情况如下：\n\n'
-        for i in range(self.click_poet.question_amount):
-            if self.answers[i] == '':
-                conclusion += '{0:>2}、未回答。\n'.format(i + 1)
-            else:
-                if self.answers[i] == self.click_poet.right_answer[i]:
-                    conclusion += '{0:>2}、回答正确。\n'.format(i + 1)
-                else:
-                    conclusion += '{0:>2}、回答错误。\n'.format(i + 1)
-        grade = self.right_amount / self.click_poet.question_amount * 100
-        score = '您的总得分为：{0:.1f}分'.format(grade)
-        self.click_poet_interface = tkinter.Tk()
-        self.click_poet_interface.title("回答情况总结")
-        self.click_poet_interface.geometry("400x400+500+150")
-        img = Image.open("./image/背景5.jpg")
-        photo = ImageTk.PhotoImage(img)
-        bg_photo = tkinter.Canvas(self.click_poet_interface, width=400, height=400)
-        bg_photo.create_image(250, 300, image=photo)
-        bg_photo.create_text(80, 200, text=conclusion, fill='black', font=("宋体", 16))
-        bg_photo.create_text(120, 18, text=score, fill='black', font=("宋体", 18))
-        bg_photo.pack()
-        exit0 = tkinter.Button(self.click_poet_interface, text="退出游戏", font=('楷体', 18), bg='springgreen',
-                               activebackground='lime', command=self.exit_click_poet)
-        exit0.place(relwidth=0.3, relheight=0.1, relx=0.7, rely=0.9)
-        back0 = tkinter.Button(self.click_poet_interface, text="返回首页", font=('楷体', 18), bg='springgreen',
-                               activebackground='lime', command=self.back_mode_selection)
-        back0.place(relwidth=0.3, relheight=0.1, relx=0, rely=0.9)
-        self.click_poet_interface.protocol("WM_DELETE_WINDOW", self.exit_click_poet)
-        self.click_poet_interface.mainloop()
+        grade_interface = GradeInterface()
+        grade_interface.run(2, self.click_poet.question_amount, self.answers, self.click_poet.right_answer)
 
 
 class YouSayIGuess(object):
@@ -416,35 +416,8 @@ class YouSayIGuess(object):
 
     def show_grade(self):
         '''显示回答情况和最终得分'''
-        conclusion = '回答情况如下：\n\n'
-        for i in range(self.question_amount):
-            if self.answers[i] == '':
-                conclusion += '{0:>2}、未回答。\n'.format(i + 1)
-            else:
-                if self.answers[i] == self.right_answer[i]:
-                    conclusion += '{0:>2}、回答正确。\n'.format(i + 1)
-                else:
-                    conclusion += '{0:>2}、回答错误。\n'.format(i + 1)
-        grade = self.right_amount / self.question_amount * 100
-        score = '您的总得分为：{0:.1f}分'.format(grade)
-        self.guess_interface = tkinter.Tk()
-        self.guess_interface.title("回答情况总结")
-        self.guess_interface.geometry("400x400+500+150")
-        img = Image.open("./image/背景5.jpg")
-        photo = ImageTk.PhotoImage(img)
-        bg_photo = tkinter.Canvas(self.guess_interface, width=400, height=400)
-        bg_photo.create_image(250, 300, image=photo)
-        bg_photo.create_text(80, 200, text=conclusion, fill='black', font=("宋体", 14))
-        bg_photo.create_text(120, 18, text=score, fill='black', font=("宋体", 18))
-        bg_photo.pack()
-        exit0 = tkinter.Button(self.guess_interface, text="退出游戏", font=('楷体', 18), bg='springgreen',
-                               activebackground='lime', command=self.exit_guess)
-        exit0.place(relwidth=0.3, relheight=0.1, relx=0.7, rely=0.9)
-        back0 = tkinter.Button(self.guess_interface, text="返回首页", font=('楷体', 18), bg='springgreen',
-                               activebackground='lime', command=self.back_mode_selection)
-        back0.place(relwidth=0.3, relheight=0.1, relx=0, rely=0.9)
-        self.guess_interface.protocol("WM_DELETE_WINDOW", self.exit_guess)
-        self.guess_interface.mainloop()
+        grade_interface = GradeInterface()
+        grade_interface.run(3, self.question_amount, self.answers, self.right_answer)
 
     def next_question_response(self):
         self.see_answer = 1
