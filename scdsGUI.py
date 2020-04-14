@@ -30,7 +30,7 @@ class GradeInterface(object):
                     right_amounts += 1
                     conclusion += '{0:>2}、回答正确：{1}\n'.format(i + 1, answers[i])
                 else:
-                    if answers[i] == right_answer[i]:
+                    if answers[i] == right_answer[i] or answers[i] == right_answer[i][1]:
                         right_amounts += 1
                         conclusion += '{0:>2}、回答正确。\n'.format(i + 1)
                     else:
