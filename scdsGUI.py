@@ -276,18 +276,8 @@ class ClickPoet(object):
         self.click_poet_interface.mainloop()
 
     def show_right_answer(self):
-        window = tkinter.Tk()
-        window.title('你说我猜')
-        window.geometry('500x150+450+200')
-        img = Image.open("./image/背景3.jpg")
-        photo = ImageTk.PhotoImage(img)
-        bg_photo = tkinter.Canvas(self.click_poet_interface, width=400, height=400)
-        bg_photo.create_image(350, 163, image=photo)
-        bg_photo.pack()
-        word_display = tkinter.Label(window, text='来自《' + self.click_poet.poet_name[self.question_number] +
-                                                  '》的：' + self.click_poet.right_answer[self.question_number],
-                                     bg='green', fg='white', font=('Arial', 12), width=60, height=2)
-        word_display.place(relwidth=1, relheight=0.6, relx=0, rely=0.2)
+        messagebox.showinfo(message='来自《' + self.click_poet.poet_name[self.question_number] +
+                                    '》的：' + self.click_poet.right_answer[self.question_number])
         self.see_answer = 1
         self.click_poet_interface.destroy()
 
@@ -424,13 +414,8 @@ class YouSayIGuess(object):
         self.guess_interface.destroy()
 
     def show_right_answer(self):
-        window = tkinter.Tk()
-        window.title('你说我猜')
-        window.geometry('500x150+450+200')
-        word_display = tkinter.Label(window, text='来自《' + self.right_answer[self.question_number][0] +
-                                                  '》的：' + self.right_answer[self.question_number][1],
-                                     bg='green', fg='white', font=('Arial', 12), wraplength=360)
-        word_display.place(relwidth=1, relheight=0.6, relx=0, rely=0.2)
+        messagebox.showinfo(message='来自《' + self.right_answer[self.question_number][0] +
+                                    '》的：' + self.right_answer[self.question_number][1])
         self.see_answer = 1
         self.guess_interface.destroy()
 
