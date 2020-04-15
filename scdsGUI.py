@@ -79,6 +79,7 @@ class SayPoet(object):
         mode_select_interface.destroy()
         self.say_poet.get_question()
         self.say_poet.get_poet_library()
+        self.answering_state[0] = 1
         start_time = time.time()
         while not self.exiting:
             end_time = time.time()
