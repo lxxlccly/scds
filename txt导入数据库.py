@@ -55,7 +55,7 @@ class WordCreate():
             num+=1
 def main():
     
-    generator = WordCreate('D:\桌面\诗词库-2-赏析.txt')  #选择合适的路径
+    generator = WordCreate('D:\Mydesk\诗词库-2-赏析.txt')  #选择合适的路径
     generator.OperationSql()
     
     

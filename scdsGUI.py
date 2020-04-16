@@ -15,7 +15,7 @@ class GradeInterface(object):
         self.grade_interface = None
 
     def exit_grade_interface(self):
-        '''显示答案界面的退出游戏函数'''
+        '''显示答案界面的退出游戏函数。'''
         global is_running
         is_running = False
         self.grade_interface.destroy()
