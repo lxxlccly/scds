@@ -173,6 +173,10 @@ class SayPoet(object):
             self.answering_state[number] = 2
             self.right_amount += 1
             messagebox.showinfo(message="回答正确！")
+            for i in range(self.say_poet.question_amount):
+                if self.answering_state[i] == 0:
+                    self.answering_state[i] = 1
+                    break
         else:
             messagebox.showinfo(message="回答错误！")
         self.say_poet_interface.destroy()
