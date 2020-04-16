@@ -72,9 +72,6 @@ class SayPoet(object):
         self.right_amount = 0
         self.answering_state = [0] * self.say_poet.question_amount
         self.answer = None
-        self.start_time = 0
-        self.var = None
-        self.time_out = 0
 
     def run(self):
         '''出口成诗运行函数'''
@@ -83,11 +80,16 @@ class SayPoet(object):
         self.say_poet.get_question()
         self.say_poet.get_poet_library()
         self.answering_state[0] = 1
-        self.start_time = time.time()
+        start_time = time.time()
         while not self.exiting:
-            if self.exiting == 1 or self.time_out or self.say_poet.unanswered == [0] * self.say_poet.question_amount:
+            end_time = time.time()
+            if end_time - start_time > self.time_limit:
                 break
             self.say_poet_display()
+            if self.exiting == 1:
+                break
+            if self.say_poet.unanswered == [0] * self.say_poet.question_amount:
+                break
         if self.exiting == 0:
             self.show_grade()
 
@@ -111,17 +113,12 @@ class SayPoet(object):
         photo = ImageTk.PhotoImage(img)
         bg_photo = tkinter.Canvas(self.say_poet_interface, width=400, height=400)
         bg_photo.create_image(250, 300, image=photo)
-        bg_photo.create_text(136, 290, text='请选词后在下方输入对应诗句：', fill='black', font=("宋体", 14))
+        bg_photo.create_text(150, 290, text='请选词后在下方输入答案：', fill='black', font=("宋体", 18))
         bg_photo.pack()
         p1 = ttk.Progressbar(self.say_poet_interface, mode="determinate")
         p1.place(relwidth=1, relheight=0.02, relx=0, rely=0.01)
         p1["maximum"] = self.say_poet.question_amount
         p1["value"] = self.right_amount
-        self.var = tkinter.StringVar()
-        w = tkinter.Label(self.say_poet_interface, text="剩余时间：" + str(self.time_limit) + "秒",
-                          textvariable=self.var, font=("宋体", 12), bg='lightcyan', )
-        self.var.set("剩余时间：" + str(self.time_limit) + "秒")
-        w.place(relwidth=0.32, relheight=0.06, relx=0.02, rely=0.04)
         for i in range(4):
             for j in range(3):
                 index = i * 3 + j
@@ -130,7 +127,7 @@ class SayPoet(object):
                                                  bg=background_color[self.answering_state[index]],
                                                  font=('楷体', 18),
                                                  command=lambda index0=i, index1=j: self.word_response(index0, index1))
-                question_button.place(relwidth=0.3, relheight=0.13, relx=0.025+0.325*j, rely=0.12+0.14*i)
+                question_button.place(relwidth=0.3, relheight=0.14, relx=0.025+0.325*j, rely=0.04+0.16*i)
         self.answer = tkinter.Entry(self.say_poet_interface, font=("宋体", 14))
         self.answer.place(relwidth=0.8, relheight=0.1, relx=0, rely=0.78)
         submit_button = tkinter.Button(self.say_poet_interface, text='提交', font=('楷体', 18), bg='springgreen',
@@ -143,18 +140,7 @@ class SayPoet(object):
                                activebackground='lime', command=self.back_mode_selection)
         back0.place(relwidth=0.3, relheight=0.1, relx=0, rely=0.9)
         self.say_poet_interface.protocol("WM_DELETE_WINDOW", self.exit_say_poet)
-        self.get_time()
         self.say_poet_interface.mainloop()
-
-    def get_time(self):
-        end_time = time.time()
-        rest_time = self.time_limit - int(end_time - self.start_time)
-        self.var.set('剩余时间：' + str(rest_time) + '秒')
-        if rest_time == 0:
-            self.time_out = 1
-            self.say_poet_interface.destroy()
-        else:
-            self.say_poet_interface.after(1000, self.get_time)
 
     def show_grade(self):
         '''显示回答情况和最终得分'''
@@ -201,15 +187,13 @@ class ClickPoet(object):
         self.click_state = [0] * 12
         self.right_amount = 0
         self.see_answer = 0
-        self.start_time = 0
-        self.var = None
-        self.time_out = 0
 
     def run(self):
         '''点字成诗运行函数'''
         global mode_select_interface
         mode_select_interface.destroy()
-        self.start_time = time.time()
+        start_time = time.time()
+        end_time = 0
         for i in range(self.click_poet.question_amount):
             self.see_answer = 0
             self.click_state = [0] * 12
@@ -217,11 +201,12 @@ class ClickPoet(object):
             self.click_poet.get_question(i)
             print(self.click_poet.right_answer[i])
             while not self.exiting:
-                if self.time_out or self.exiting == 1 or self.see_answer == 1 or\
+                end_time = time.time()
+                if end_time - start_time > self.time_limit or self.exiting == 1 or self.see_answer == 1 or\
                         len(self.click_poet.right_answer[i]) == len(self.answers[i]):
                     break
                 self.click_poet_display()
-            if self.time_out or self.exiting == 1:
+            if end_time - start_time > self.time_limit or self.exiting == 1:
                 break
             if self.answers[i] == self.click_poet.right_answer[i]:
                 self.right_amount += 1
@@ -254,21 +239,16 @@ class ClickPoet(object):
         photo = ImageTk.PhotoImage(img)
         bg_photo = tkinter.Canvas(self.click_poet_interface, width=400, height=400)
         bg_photo.create_image(250, 300, image=photo)
-        bg_photo.create_text(130, 280, text='请点击上方的字凑成一句诗：', fill='black', font=("宋体", 14))
-        bg_photo.create_text(150, 55, text=score, fill='black', font=("宋体", 12))
+        bg_photo.create_text(160, 280, text='请点击上方的字凑成一句诗：', fill='black', font=("宋体", 18))
+        bg_photo.create_text(150, 34, text=score, fill='black', font=("宋体", 12))
         bg_photo.pack()
         p1 = ttk.Progressbar(self.click_poet_interface, mode="determinate")
         p1.place(relwidth=1, relheight=0.02, relx=0, rely=0.01)
         p1["maximum"] = self.click_poet.question_amount
         p1["value"] = self.question_number + 1
-        self.var = tkinter.StringVar()
-        w = tkinter.Label(self.click_poet_interface, text="剩余时间：" + str(self.time_limit) + "秒",
-                          textvariable=self.var, font=("宋体", 12), bg='lightcyan', )
-        self.var.set("剩余时间：" + str(self.time_limit) + "秒")
-        w.place(relwidth=0.32, relheight=0.06, relx=0.02, rely=0.04)
         next_question = tkinter.Button(self.click_poet_interface, text='下一题', font=('楷体', 18), bg='springgreen',
                                        activebackground='lime', command=self.next_question_response)
-        next_question.place(relwidth=0.2, relheight=0.08, relx=0.78, rely=0.04)
+        next_question.place(relwidth=0.2, relheight=0.08, relx=0.8, rely=0.04)
         for i in range(3):
             for j in range(4):
                 index = i * 4 + j
@@ -277,7 +257,7 @@ class ClickPoet(object):
                                       text=self.click_poet.questions[self.question_number][index],
                                       activeforeground='green',
                                       command=lambda index0=i, index1=j: self.word_response(index0, index1))
-                word.place(relwidth=0.225, relheight=0.15, relx=0.02+0.245*j, rely=0.18+0.16*i)
+                word.place(relwidth=0.225, relheight=0.15, relx=0.02+0.245*j, rely=0.15+0.17*i)
         see_right_answer = tkinter.Button(self.click_poet_interface, text='查看答案', font=('楷体', 18),
                                           bg='springgreen', activebackground='lime', command=self.show_right_answer)
         see_right_answer.place(relwidth=0.3, relheight=0.1, relx=0.35, rely=0.9)
@@ -294,18 +274,7 @@ class ClickPoet(object):
                                activebackground='lime', command=self.back_mode_selection)
         back0.place(relwidth=0.3, relheight=0.1, relx=0, rely=0.9)
         self.click_poet_interface.protocol("WM_DELETE_WINDOW", self.exit_click_poet)
-        self.get_time()
         self.click_poet_interface.mainloop()
-
-    def get_time(self):
-        end_time = time.time()
-        rest_time = self.time_limit - int(end_time - self.start_time)
-        self.var.set('剩余时间：' + str(rest_time) + '秒')
-        if rest_time == 0:
-            self.time_out = 1
-            self.click_poet_interface.destroy()
-        else:
-            self.click_poet_interface.after(1000, self.get_time)
 
     def show_right_answer(self):
         messagebox.showinfo(message='来自《' + self.click_poet.poet_name[self.question_number] +
@@ -360,15 +329,13 @@ class YouSayIGuess(object):
         self.answer = None
         self.right_amount = 0
         self.see_answer = 0
-        self.start_time = 0
-        self.var = None
-        self.time_out = 0
 
     def run(self):
         '''你说我猜运行函数'''
         global mode_select_interface
         mode_select_interface.destroy()
-        self.start_time = time.time()
+        start_time = time.time()
+        end_time = 0
         for i in range(self.question_amount):
             self.see_answer = 0
             self.question_number = i
@@ -377,10 +344,12 @@ class YouSayIGuess(object):
             self.questions.append(word)
             self.right_answer.append([name, sentence])
             while not self.exiting:
-                if self.time_out or self.exiting == 1 or self.see_answer == 1:
+                end_time = time.time()
+                if end_time - start_time > self.time_limit or self.exiting == 1 or self.see_answer == 1 or \
+                        len(self.right_answer[i]) == len(self.answers[i]):
                     break
                 self.guess_display()
-            if self.time_out or self.exiting == 1:
+            if end_time - start_time > self.time_limit or self.exiting == 1:
                 break
             if re.findall(r'[\u4E00-\u9FA5]+', self.answers[i]) == re.findall(r'[\u4E00-\u9FA5]+',
                                                                               self.right_answer[i][1]):
@@ -406,24 +375,19 @@ class YouSayIGuess(object):
         photo = ImageTk.PhotoImage(img)
         bg_photo = tkinter.Canvas(self.guess_interface, width=400, height=400)
         bg_photo.create_image(250, 300, image=photo)
-        bg_photo.create_text(150, 70, text=score, fill='black', font=("宋体", 12))
-        bg_photo.create_text(135, 260, text='请猜出上方内容所描述的诗句：', fill='black', font=("宋体", 14))
+        bg_photo.create_text(150, 34, text=score, fill='black', font=("宋体", 12))
+        bg_photo.create_text(170, 260, text='请猜出上方内容所描述的诗句：', fill='black', font=("宋体", 18))
         bg_photo.pack()
         p1 = ttk.Progressbar(self.guess_interface, mode="determinate")
         p1.place(relwidth=1, relheight=0.02, relx=0, rely=0.01)
         p1["maximum"] = self.question_amount
         p1["value"] = self.question_number + 1
-        self.var = tkinter.StringVar()
-        w = tkinter.Label(self.guess_interface, text="剩余时间：" + str(self.time_limit) + "秒",
-                          textvariable=self.var, font=("宋体", 12), bg='lightcyan',)
-        self.var.set("剩余时间：" + str(self.time_limit) + "秒")
-        w.place(relwidth=0.32, relheight=0.06, relx=0.01, rely=0.04)
         label2 = tkinter.Label(self.guess_interface, text='译文：' + self.questions[self.question_number],
                                font=("宋体", 14), wraplength=360, bg='lightsteelblue')
-        label2.place(relwidth=1, relheight=0.3, relx=0, rely=0.25)
+        label2.place(relwidth=1, relheight=0.3, relx=0, rely=0.2)
         next_question = tkinter.Button(self.guess_interface, text='下一题', font=('楷体', 18), bg='springgreen',
                                        activebackground='lime', command=self.next_question_response)
-        next_question.place(relwidth=0.2, relheight=0.08, relx=0.79, rely=0.04)
+        next_question.place(relwidth=0.2, relheight=0.08, relx=0.8, rely=0.04)
         self.answer = tkinter.Entry(self.guess_interface, font=("宋体", 14))
         self.answer.place(relwidth=0.7, relheight=0.1, relx=0, rely=0.7)
         submit_button = tkinter.Button(self.guess_interface, text='提交', font=('楷体', 18), bg='springgreen',
@@ -439,18 +403,7 @@ class YouSayIGuess(object):
                                activebackground='lime', command=self.back_mode_selection)
         back0.place(relwidth=0.3, relheight=0.1, relx=0, rely=0.9)
         self.guess_interface.protocol("WM_DELETE_WINDOW", self.exit_guess)
-        self.get_time()
         self.guess_interface.mainloop()
-
-    def get_time(self):
-        end_time = time.time()
-        rest_time = self.time_limit - int(end_time - self.start_time)
-        self.var.set('剩余时间：' + str(rest_time) + '秒')
-        if rest_time == 0:
-            self.time_out = 1
-            self.guess_interface.destroy()
-        else:
-            self.guess_interface.after(1000, self.get_time)
 
     def show_grade(self):
         '''显示回答情况和最终得分'''
