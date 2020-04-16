@@ -17,7 +17,7 @@ if __name__ == '__main__':
         div = soup.find_all('a',{'target':'_blank'})
         div = div[1:-1]
         name = div[0].string
-        f = open('D:\桌面\诗词库-2-赏析.txt','w+',encoding='utf-8')
+        f = open('D:\MyDesk\诗词库-2-赏析.txt','w+',encoding='utf-8')
         num = 1
         shang_xi = []
         for i in div:
