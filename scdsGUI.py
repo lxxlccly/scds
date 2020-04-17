@@ -103,7 +103,7 @@ class SayPoet(object):
 
     def say_poet_display(self):
         '''出口成诗界面'''
-        background_color = ['skyblue', 'limegreen', 'grey']
+        background_color = ['skyblue', 'limegreen', 'grey', 'red']
         self.say_poet_interface = tkinter.Tk()
         self.say_poet_interface.title("出口成诗")
         self.say_poet_interface.geometry("400x400+500+150")
@@ -136,6 +136,9 @@ class SayPoet(object):
         submit_button = tkinter.Button(self.say_poet_interface, text='提交', font=('楷体', 18), bg='springgreen',
                                        activebackground='lime', command=self.submit_response)
         submit_button.place(relwidth=0.18, relheight=0.1, relx=0.81, rely=0.78)
+        see_right_answer = tkinter.Button(self.say_poet_interface, text='查看答案', font=('楷体', 18),
+                                          bg='springgreen', activebackground='lime', command=self.show_right_answer)
+        see_right_answer.place(relwidth=0.3, relheight=0.1, relx=0.35, rely=0.9)
         exit0 = tkinter.Button(self.say_poet_interface, text="退出游戏", font=('楷体', 18), bg='springgreen',
                                activebackground='lime', command=self.exit_say_poet)
         exit0.place(relwidth=0.3, relheight=0.1, relx=0.7, rely=0.9)
@@ -145,6 +148,21 @@ class SayPoet(object):
         self.say_poet_interface.protocol("WM_DELETE_WINDOW", self.exit_say_poet)
         self.get_time()
         self.say_poet_interface.mainloop()
+
+    def show_right_answer(self):
+        number = 0
+        for i in range(self.say_poet.question_amount):
+            if self.answering_state[i] == 1:
+                number = i
+        self.answering_state[number] = 3
+        self.say_poet.unanswered[number] = 0
+        text = self.say_poet.see_right_answer(number)
+        messagebox.showinfo(message=text)
+        self.say_poet_interface.destroy()
+        for i in range(self.say_poet.question_amount):
+            if self.answering_state[i] == 0:
+                self.answering_state[i] = 1
+                break
 
     def get_time(self):
         end_time = time.time()
@@ -172,6 +190,7 @@ class SayPoet(object):
         if answer_right:
             self.answering_state[number] = 2
             self.right_amount += 1
+            self.say_poet.unanswered[number] = 0
             messagebox.showinfo(message="回答正确！")
             for i in range(self.say_poet.question_amount):
                 if self.answering_state[i] == 0:

@@ -73,6 +73,15 @@ class PoetGame(object):
                         return True
         return False
 
+    def see_right_answer(self, number):
+        text = ''
+        for i in range(len(self.all_poet)):
+            for j in range(len(self.all_poet[i]['paragraphs'])):
+                if self.all_poet[i]['chapter'].find(self.questions[number]) != -1 \
+                        or self.all_poet[i]['paragraphs'][j].find(self.questions[number]) != -1:
+                    text += '来自《' + self.all_poet[i]['chapter'] + '》的：' + self.all_poet[i]['paragraphs'][j] + '\n'
+        return text
+
     def get_question(self):
         '''获得题目'''
         all_question = []
