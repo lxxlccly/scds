@@ -69,7 +69,7 @@ class SayPoet(object):
         self.say_poet_interface = None
         self.say_poet = ckcs.PoetGame()
         self.exiting = 0
-        self.right_amount = 0
+        self.answer_amount = 0
         self.answering_state = [0] * self.say_poet.question_amount
         self.answer = None
         self.start_time = 0
@@ -116,7 +116,7 @@ class SayPoet(object):
         p1 = ttk.Progressbar(self.say_poet_interface, mode="determinate")
         p1.place(relwidth=1, relheight=0.02, relx=0, rely=0.01)
         p1["maximum"] = self.say_poet.question_amount
-        p1["value"] = self.right_amount
+        p1["value"] = self.answer_amount
         self.var = tkinter.StringVar()
         w = tkinter.Label(self.say_poet_interface, text="剩余时间：" + str(self.time_limit) + "秒",
                           textvariable=self.var, font=("宋体", 12), bg='lightcyan', )
@@ -158,6 +158,7 @@ class SayPoet(object):
         self.say_poet.unanswered[number] = 0
         text = self.say_poet.see_right_answer(number)
         messagebox.showinfo(message=text)
+        self.answer_amount += 1
         self.say_poet_interface.destroy()
         for i in range(self.say_poet.question_amount):
             if self.answering_state[i] == 0:
@@ -189,7 +190,7 @@ class SayPoet(object):
         answer_right = self.say_poet.verification(number, answers)
         if answer_right:
             self.answering_state[number] = 2
-            self.right_amount += 1
+            self.answer_amount += 1
             self.say_poet.unanswered[number] = 0
             messagebox.showinfo(message="回答正确！")
             for i in range(self.say_poet.question_amount):

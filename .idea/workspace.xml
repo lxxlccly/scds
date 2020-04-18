@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e615d7b0-0c9d-4667-a35a-695819400a8b" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/scds.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/scds.iml" afterDir="false" />
+    <list default="true" id="e615d7b0-0c9d-4667-a35a-695819400a8b" name="Default Changelist" comment="“出口成诗”某个词回答正确之后默认将从头开始的第一个未回答的词的状态设置为正在回答">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scdsGUI.py" beforeDir="false" afterPath="$PROJECT_DIR$/scdsGUI.py" afterDir="false" />
     </list>
@@ -14,20 +12,27 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/scdsGUI.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="682">
-              <caret line="540" selection-start-line="540" selection-end-line="540" />
+            <state relative-caret-position="267">
+              <caret line="162" column="54" lean-forward="true" selection-start-line="162" selection-start-column="54" selection-end-line="162" selection-end-column="54" />
               <folding>
                 <element signature="e#14#25#0" expanded="true" />
+                <element signature="e#191#2651#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
     </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>梨花</find>
+      <find>self.right_amount</find>
+    </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -46,6 +51,7 @@
         <option value="$PROJECT_DIR$/scds.py" />
         <option value="$PROJECT_DIR$/dzcs.py" />
         <option value="$PROJECT_DIR$/数据库调用.py" />
+        <option value="$PROJECT_DIR$/ckcs.py" />
         <option value="$PROJECT_DIR$/scdsGUI.py" />
       </list>
     </option>
@@ -337,7 +343,21 @@
       <option name="project" value="LOCAL" />
       <updated>1586936048941</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="曹宇轩修改的计时器功能revert了，重新上传一下">
+      <created>1587002146276</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1587002146276</updated>
+    </task>
+    <task id="LOCAL-00018" summary="“出口成诗”某个词回答正确之后默认将从头开始的第一个未回答的词的状态设置为正在回答">
+      <created>1587002818539</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1587002818539</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -397,14 +417,13 @@
     <MESSAGE value="修改“查看答案”按钮的响应函数" />
     <MESSAGE value="修改重构导致的bug" />
     <MESSAGE value="刚进入“出口成诗”界面时默认正在回答第一个词" />
-    <option name="LAST_COMMIT_MESSAGE" value="刚进入“出口成诗”界面时默认正在回答第一个词" />
+    <MESSAGE value="曹宇轩修改的计时器功能revert了，重新上传一下" />
+    <MESSAGE value="“出口成诗”某个词回答正确之后默认将从头开始的第一个未回答的词的状态设置为正在回答" />
+    <option name="LAST_COMMIT_MESSAGE" value="“出口成诗”某个词回答正确之后默认将从头开始的第一个未回答的词的状态设置为正在回答" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/dzcs_final1.py" />
     <entry file="file://$PROJECT_DIR$/scds_dzcs.py" />
-    <entry file="file://$PROJECT_DIR$/poet/tssbs.json">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/../备份/liusijie/新建文件夹/GUI.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-864">
@@ -535,10 +554,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/poet/tssbs.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="134">
+          <caret line="638" column="13" selection-start-line="638" selection-start-column="13" selection-end-line="638" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/ckcs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="761">
-          <caret line="45" column="63" lean-forward="true" selection-start-line="45" selection-start-column="24" selection-end-line="45" selection-end-column="63" />
+        <state relative-caret-position="172">
+          <caret line="74" lean-forward="true" selection-start-line="74" selection-end-line="74" />
           <folding>
             <element signature="e#54#63#0" expanded="true" />
           </folding>
@@ -547,10 +573,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/scdsGUI.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="682">
-          <caret line="540" selection-start-line="540" selection-end-line="540" />
+        <state relative-caret-position="267">
+          <caret line="162" column="54" lean-forward="true" selection-start-line="162" selection-start-column="54" selection-end-line="162" selection-end-column="54" />
           <folding>
             <element signature="e#14#25#0" expanded="true" />
+            <element signature="e#191#2651#0" />
           </folding>
         </state>
       </provider>
