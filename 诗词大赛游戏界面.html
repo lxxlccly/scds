@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="诗词大赛游戏界面.css"/>
+    <title>诗词大赛小游戏</title>
+</head>
+<body>
+    <div class="game_bg" style="background-image: url(./image/背景6.jpg);"></div>
+    <div>
+        <div class="game_mode">
+            <br>
+            <legend class="text0">诗词大赛</legend><br>
+            <p id="username" class="text1">用户名：</p><br>
+            <input type="button" class="btn1" value="出口成诗" onclick="say_poet()"/><br>
+            <input type="button" class="btn2" value="点字成诗" onclick="click_poet()"/><br>
+            <input type="button" class="btn3" value="你说我猜" onclick="guess_poet()"/><br>
+            <input type="button" class="btn4" value="查询成绩记录" onclick="find_notes()"/><br>
+        </div>
+        <div class="workspace">
+            <legend class="text2">欢迎来到诗词大赛游戏！</legend>
+        </div>
+    </div>
+</body>
+<script language="javascript" type="text/javascript">
+        function $(id) { return document.getElementById(id); }
+        var loc = location.href;
+	    var n1 = loc.length;
+	    var n2 = loc.indexOf("=");
+	    user_name = decodeURI(loc.substr(n2+1, n1-n2));
+	    if (n2 > 0){
+	        $("username").innerHTML = "用户名：" + user_name
+	    }
+        function say_poet(){
+            location.href="出口成诗.html?"+"username="+user_name;
+        }
+        function click_poet(){
+            location.href="点字成诗.html?"+"username="+user_name;
+        }
+        function guess_poet(){
+            location.href="你说我猜.html?"+"username="+user_name;
+        }
+        function find_notes(){
+            location.href="查询记录.html?"+"username="+user_name;
+        }
+
+</script>
+</html>

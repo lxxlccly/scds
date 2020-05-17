@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="回答情况.css"/>
+    <title>诗词大赛小游戏</title>
+</head>
+<body>
+    <div class="game_bg" style="background-image: url(./image/背景6.jpg);"></div>
+    <div>
+        <div class="game_mode">
+            <br>
+            <legend class="text0">诗词大赛</legend><br>
+            <p id="username" class="text1">用户名：</p><br>
+            <input type="button" class="btn1" value="出口成诗" onclick="say_poet()"/><br>
+            <input type="button" class="btn2" value="点字成诗" onclick="click_poet()"/><br>
+            <input type="button" class="btn3" value="你说我猜" onclick="guess_poet()"/><br>
+            <input type="button" class="btn4" value="查询成绩记录" onclick="find_notes()"/><br>
+        </div>
+        <div class="workspace">
+            <label id="grade" class="text2">您的总得分为：</label><br>
+            <label class="text3">回答情况如下：</label><br>
+            <label id="ans1" class="text4">1、无</label>
+            <label id="ans2" class="text5">2、无</label>
+            <label id="ans3" class="text6">3、无</label>
+            <label id="ans4" class="text7">4、无</label>
+            <label id="ans5" class="text8">5、无</label>
+            <label id="ans6" class="text9">6、无</label>
+            <label id="ans7" class="text10">7、无</label>
+            <label id="ans8" class="text11">8、无</label>
+            <label id="ans9" class="text12">9、无</label>
+            <label id="ans10" class="text13">10、无</label>
+            <label id="ans11" class="text14">11、无</label>
+            <label id="ans12" class="text15">12、无</label>
+        </div>
+    </div>
+</body>
+<script language="javascript" type="text/javascript">
+        function $(id) { return document.getElementById(id); }
+        var message =  decodeURI(location.href);
+        data = message.split("#");
+	    var n2 = message.indexOf("=");
+	    user_name = data[1];
+	    if (n2 > 0){
+	        $("username").innerHTML = "用户名：" + user_name
+	        $("grade").innerHTML = "您的总得分为：" + data[14] + "分";
+	        $("ans1").innerHTML = "1、"+data[2]+"。";
+	        $("ans2").innerHTML = "2、"+data[3]+"。";
+	        $("ans3").innerHTML = "3、"+data[4]+"。";
+	        $("ans4").innerHTML = "4、"+data[5]+"。";
+	        $("ans5").innerHTML = "5、"+data[6]+"。";
+	        $("ans6").innerHTML = "6、"+data[7]+"。";
+	        $("ans7").innerHTML = "7、"+data[8]+"。";
+	        $("ans8").innerHTML = "8、"+data[9]+"。";
+	        $("ans9").innerHTML = "9、"+data[10]+"。";
+	        $("ans10").innerHTML = "10、"+data[11]+"。";
+	        $("ans11").innerHTML = "11、"+data[12]+"。";
+	        $("ans12").innerHTML = "12、"+data[13]+"。";
+	    }
+        function say_poet(){
+            location.href="出口成诗.html?"+"username="+user_name;
+        }
+        function click_poet(){
+            location.href="点字成诗.html?"+"username="+user_name;
+        }
+        function guess_poet(){
+            location.href="你说我猜.html?"+"username="+user_name;
+        }
+        function find_notes(){
+            location.href="查询记录.html?"+"username="+user_name;
+        }
+</script>
+</html>

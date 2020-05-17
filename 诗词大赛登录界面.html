@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="诗词大赛登录界面.css"/>
+    <title>诗词大赛小游戏</title>
+</head>
+<body>
+    <div class="signup_bg" style="background-image: url(./image/背景6.jpg);"></div>
+    <form class="sign">
+        <br>
+        <legend class="text0">诗词大赛登录入口</legend>
+        <br>
+        <label class="text1">账号：</label>
+        <input id="username" class="text2" type="text" value=""/><br><br>
+        <label class="text1">密码：</label>
+        <input id="pwd" class="text2" type="password" value=""/><br><br>
+        <input id="signup" type="button" class="btn1" value="登录" onclick="signing()"/>
+        <input id="register" type="button" class="btn2" value="注册" onclick="registering()"/>
+        <input id="admin" type="button" class="btn3" value="管理员登录" onclick="charge()"/>
+    </form>
+</body>
+<script language="javascript" type="text/javascript">
+        function $(id) { return document.getElementById(id); }
+        function check(){
+            var username = $("username").value;
+            var pwd = $("pwd").value;
+            if (username == "" || pwd == ""){
+                alert("用户名或密码不能为空");
+                return false;
+            }
+            else if (pwd.length < 6){
+                alert("密码不能少于六位");
+                return false;
+            }
+            return true;
+        }
+        var isConnect = 0;
+        var socket;
+        window.onload = function connect(){
+            var host = "ws://127.0.0.1:9999/";
+            socket = new WebSocket(host);
+            try {
+	            socket.onopen = function (msg) {
+	                isConnect = 1;
+	            };
+	            socket.onmessage = function (msg) {
+	                message = decodeURI(msg.data)
+	                if (message == '登录成功') {
+	                    location.href="诗词大赛游戏界面.html?"+"username="+encodeURI($("username").value);
+	                }
+	                else if (message == '管理员登录成功') {
+	                    location.href="管理员界面.html?"+"username="+encodeURI($("username").value)+"#password="+encodeURI($("pwd").value);
+	                }
+	                else {
+	                    alert(message + "!");
+	                }
+	            };
+	            socket.onerror = function (error) { alert("连接错误；Error："+ error.name); };
+	            socket.onclose = function (msg) {
+	                alert("连接关闭!");
+	            };
+	        }
+	        catch (ex) {
+	            log(ex);
+	        }
+        }
+        async function signing(){
+            var isRight = check();
+            if (!isRight){
+                return false;
+            }
+            var str = "00#" + $("username").value + "#" + $("pwd").value;
+	        socket.send(encodeURI(str));
+        }
+        async function registering(){
+            var isRight = check();
+            if (!isRight){
+                return false;
+            }
+            var str = "01#" + $("username").value + "#" + $("pwd").value;
+	        socket.send(encodeURI(str));
+        }
+        async function charge(){
+            var isRight = check();
+            if (!isRight){
+                return false;
+            }
+            var str = "02#" + $("username").value + "#" + $("pwd").value;
+	        socket.send(encodeURI(str));
+        }
+</script>
+</html>

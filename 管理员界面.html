@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="管理员界面.css"/>
+    <title>用户管理</title>
+</head>
+<body>
+    <div class="signup_bg" style="background-image: url(./image/背景6.jpg);"></div>
+    <label class="text0">添加用户：</label><br><br>
+    <label class="text1">账号：</label>
+    <input id="username" class="text2" type="text" value="">
+    <label class="text1">密码：</label>
+    <input id="pwd" class="text2" type="text" value="">
+    <input type=button class="btn" value="添加用户" onclick="add()"><br><br>
+    <label class="text0">查看/删除用户：</label><br><br>
+</body>
+<script language="javascript" type="text/javascript">
+        function $(id) { return document.getElementById(id); }
+        var socket;
+        var username;
+        var pwd;
+        window.onload = function connect(){
+            var host = "ws://127.0.0.1:9999/";
+            socket = new WebSocket(host);
+            var data;
+            try {
+	            socket.onopen = function (msg) {
+	                socket.send(encodeURI("03#0"));
+	            };
+	            socket.onmessage = function (msg) {
+	                message = decodeURI(msg.data);
+	                if (message == '用户名已存在') {
+	                    alert(message + "!");
+	                }
+	                else if (message == '删除成功' || message == '修改成功' || message == '注册成功，请重新登录') {
+	                    location.href="管理员界面.html";
+	                }
+	                else if (message == '无账号') {
+	                    document.body.insertAdjacentHTML('beforeEnd','<label class="text1">当前没有已注册的账号！</label>');
+	                }
+	                else {
+	                    data = message.split("/");
+	                    for (var j=0;j<data.length/2-1;j++){
+	                        document.body.insertAdjacentHTML('beforeEnd','<label class="text1">账号：</label>');
+	                        document.body.insertAdjacentHTML('beforeEnd','<input class="text2"  id='+(j+2000)+' value='+data[2*j]+'>');
+	                        document.body.insertAdjacentHTML('beforeEnd','<label class="text1">密码：</label>');
+	                        document.body.insertAdjacentHTML('beforeEnd','<input class="text2"  id='+(j+3000)+' value='+data[2*j+1]+'>');
+	                        document.body.insertAdjacentHTML('beforeEnd','<input type="button" class="btn" id='+(j+1000)+' value="修改" onclick="change(this)">');
+	                        document.body.insertAdjacentHTML('beforeEnd','<input type="button" class="btn" id='+j+' value="删除该用户" onclick="delete0(this)"><br><br>');
+	                    }
+	                }
+	            };
+	            socket.onerror = function (error) { alert("连接错误；Error："+ error.name); };
+	            socket.onclose = function (msg) {
+	                alert("连接关闭!");
+	            };
+	        }
+	        catch (ex) {
+	            log(ex);
+	        }
+        }
+        async function add(){
+            username = $("username").value;
+            pwd = $("pwd").value;
+            var isRight = check();
+            if (!isRight){
+                return false;
+            }
+            var str = "01#" + $("username").value + "#" + $("pwd").value;
+	        socket.send(encodeURI(str));
+        }
+
+        async function delete0(num){
+            var str = "04#" + num.getAttribute("id");
+	        socket.send(encodeURI(str));
+        }
+
+        async function change(num){
+            username = $(Number(num.getAttribute("id"))+1000).value
+            pwd = $(Number(num.getAttribute("id"))+2000).value
+            var isRight = check();
+            if (!isRight){
+                return false;
+            }
+            var str = "05#" + num.getAttribute("id") + "#" + username + "#" + pwd;
+	        socket.send(encodeURI(str));
+        }
+
+        function check(){
+            if (username == "" || pwd == ""){
+                alert("用户名或密码不能为空");
+                return false;
+            }
+            else if (pwd.length < 6){
+                alert("密码不能少于六位");
+                return false;
+            }
+            return true;
+        }
+</script>
+</html>

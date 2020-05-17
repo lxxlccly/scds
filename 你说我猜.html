@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="你说我猜.css"/>
+    <title>诗词大赛小游戏</title>
+</head>
+<body>
+    <div class="game_bg" style="background-image: url(./image/背景6.jpg);"></div>
+    <div>
+        <div class="game_mode">
+            <br>
+            <legend class="text0">诗词大赛</legend><br>
+            <p id="username" class="text1">用户名：</p><br>
+            <input type="button" class="btn1" value="出口成诗" onclick="say_poet()"/><br>
+            <input type="button" class="btn2" value="点字成诗" onclick="click_poet()"/><br>
+            <input type="button" class="btn3" value="你说我猜" onclick="guess_poet()"/><br>
+            <input type="button" class="btn4" value="查询成绩记录" onclick="find_notes()"/><br>
+        </div>
+        <div class="workspace">
+            <label class="text2">进度：</label>
+            <progress id="prog" value="1" class="pro" max="12"></progress>
+            <label id="progressing" class="text3">1/12</label><br><br>
+            <label id="rest_time" class="text7">剩余时间：120秒</label><br><br>
+            <label id="grade" class="text4">当前得分：0分</label><br>
+            <input id="show_answer" type="button" class="show_answer_btn" value="查看答案" onclick="see_answer()" onmousedown="mouseDown(this)" onmouseup="mouseUp(this)"/>
+            <input id="descriptions" type="text" disabled="true" class="t1" value="无内容"/><br>
+            <label class="text5">请根据上方描述猜出诗句：</label><br>
+            <input id="answer" type="text" class="text6"/>
+            <input type="button" onmousedown="mouseDown(this)" onmouseup="mouseUp(this)" class="submitting" value="提交" onclick="verify()"/>
+            <input type="button" onmousedown="mouseDown(this)" onmouseup="mouseUp(this)" class="next_question" value="下一题" onclick="next_q()"/>
+        </div>
+    </div>
+</body>
+<script language="javascript" type="text/javascript">
+        function $(id) { return document.getElementById(id); }
+        var sec = 119;
+        $("rest_time").innerHTML = "剩余时间："+ String(sec+1)+"秒";
+        var answering_number = 1;
+        var loc = location.href;
+	    var n1 = loc.length;
+	    var n2 = loc.indexOf("=");
+	    user_name = decodeURI(loc.substr(n2+1, n1-n2));
+	    if (n2 > 0){
+	        $("username").innerHTML = "用户名：" + user_name
+	    }
+	    var socket;
+	    var right_amount = 0;
+	    var right_answer;
+	    var poet_number = "#";
+        window.onload = function connect(){
+            var host = "ws://127.0.0.1:9999/";
+            socket = new WebSocket(host);
+            var data;
+            timer();
+            try {
+	            socket.onopen = function (msg) {
+	                socket.send(encodeURI("13#0"));
+	            };
+	            socket.onmessage = function (msg) {
+	                message = decodeURI(msg.data);
+	                if (message == '保存成功') {
+	                    alert("游戏结束！");
+	                    show_conclusion();
+	                }
+	                else {
+	                    data = message.split("/");
+	                    right_answer = "";
+                        for (i=2;i<1+Number(data[1]);i++){
+                            right_answer += data[i];
+                            right_answer += "，";
+                        }
+                        right_answer += data[Number(data[1]) + 1];
+	                    str = "";
+	                    for (i=2+Number(data[1]);i<data.length-2;i++){
+                            str += data[i];
+                            str += "，";
+                        }
+                        str += data[data.length-2];
+                        $("descriptions").value = str;
+	                    poet_number = poet_number + data[0] +"#";
+	                    $("answer").value = "";
+	                }
+	            };
+	            socket.onerror = function (error) { alert("连接错误；Error："+ error.name); };
+	            socket.onclose = function (msg) {
+	                alert("连接关闭!");
+	            };
+	        }
+	        catch (ex) {
+	            log(ex);
+	        }
+        }
+        var str3 = user_name + "#";
+        function verify(){
+            answering_number += 1;
+            if ($("answer").value == right_answer){
+                right_amount += 1;
+                str3 += "回答正确#";
+                $("grade").innerHTML = "上一题回答正确，当前得分："+Math.round(right_amount/0.12)+"分";
+            }
+            else{
+                str3 += "回答错误#";
+                $("grade").innerHTML = "上一题回答错误，当前得分："+Math.round(right_amount/0.12)+"分";
+            }
+            $("answer").value = "";
+            if (answering_number > 12){
+                grade = "09#"+user_name+"#你说我猜#" + Math.round(right_amount/0.12);
+	            socket.send(encodeURI(grade));
+            }
+            else{
+                $("prog").value = answering_number;
+                $("progressing").innerHTML = String(answering_number) + "/12";
+                socket.send(encodeURI("13#0" + poet_number));
+            }
+        }
+        function show_conclusion(){
+	        for (i=answering_number;i<13;i++){
+                    str3 += "未回答#";
+             }
+            str3 += Math.round(right_amount/0.12);
+	        location.href="回答情况.html?"+"message=#"+str3;
+        }
+        function next_q(){
+            answering_number += 1;
+            str3 += "未回答#";
+            $("answer").value = "";
+            if (answering_number > 12){
+                grade = "09#"+user_name+"#你说我猜#" + Math.round(right_amount/0.12);
+	            socket.send(encodeURI(grade));
+            }
+            else{
+                $("prog").value = answering_number;
+                $("progressing").innerHTML = String(answering_number) + "/12";
+                $("grade").innerHTML = "上一题未回答，当前得分："+Math.round(right_amount/0.12)+"分";
+            }
+            socket.send(encodeURI("13#0" + poet_number));
+        }
+        function see_answer(){
+            alert(right_answer);
+            answering_number += 1;
+            str3 += "查看了答案#";
+            $("answer").value = "";
+            if (answering_number > 12){
+                grade = "09#"+user_name+"#你说我猜#" + Math.round(right_amount/0.12);
+	            socket.send(encodeURI(grade));
+            }
+            else{
+                $("prog").value = answering_number;
+                $("progressing").innerHTML = String(answering_number) + "/12";
+                $("grade").innerHTML = "上一题查看了答案，当前得分："+Math.round(right_amount/0.12)+"分";
+            }
+            socket.send(encodeURI("13#0" + poet_number));
+        }
+        function timer(){
+            setInterval("show_time()", 1000);
+        }
+        function show_time(){
+            $("rest_time").innerHTML = "剩余时间："+ String(sec--)+"秒";
+            if (sec == 0){
+                grade = "09#"+user_name+"#你说我猜#" + Math.round(right_amount/0.12);
+	            socket.send(encodeURI(grade));
+            }
+        }
+        function mouseDown(e){
+            e.style.backgroundColor = "lightcyan";
+        };
+        function mouseUp(e){
+            e.style.backgroundColor = "peachpuff";
+        };
+        function say_poet(){
+            location.href="出口成诗.html?"+"username="+user_name;
+        }
+        function click_poet(){
+            location.href="点字成诗.html?"+"username="+user_name;
+        }
+        function guess_poet(){
+            location.href="你说我猜.html?"+"username="+user_name;
+        }
+        function find_notes(){
+            location.href="查询记录.html?"+"username="+user_name;
+        }
+</script>
+</html>

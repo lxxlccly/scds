@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="出口成诗.css"/>
+    <title>诗词大赛小游戏</title>
+</head>
+<body>
+    <div class="game_bg" style="background-image: url(./image/背景6.jpg);"></div>
+    <div>
+        <div class="game_mode">
+            <br>
+            <legend class="text0">诗词大赛</legend><br>
+            <p id="username" class="text1">用户名：</p><br>
+            <input type="button" class="btn1" value="出口成诗" onclick="say_poet()"/><br>
+            <input type="button" class="btn2" value="点字成诗" onclick="click_poet()"/><br>
+            <input type="button" class="btn3" value="你说我猜" onclick="guess_poet()"/><br>
+            <input type="button" class="btn4" value="查询成绩记录" onclick="find_notes()"/><br>
+        </div>
+        <div class="workspace">
+            <label class="text2">进度：</label>
+            <progress id="prog" value="1" class="pro" max="12"></progress>
+            <label id="progressing" class="text3">1/12</label><br><br>
+            <label id="rest_time" class="text7">剩余时间：120秒</label><br><br>
+            <label id="grade" class="text4">当前得分：0分</label><br>
+            <input id="show_answer" type="button" class="show_answer_btn" value="查看答案" onclick="see_answer()" onmousedown="mouseDown(this)" onmouseup="mouseUp(this)"/>
+            <input id="w1" type="button" class="b1" value="1" onclick="change_state(this)"/>
+            <input id="w2" type="button" class="b2" value="2" onclick="change_state(this)"/>
+            <input id="w3" type="button" class="b3" value="3" onclick="change_state(this)"/>
+            <input id="w4" type="button" class="b4" value="4" onclick="change_state(this)"/>
+            <input id="w5" type="button" class="b5" value="5" onclick="change_state(this)"/>
+            <input id="w6" type="button" class="b6" value="6" onclick="change_state(this)"/>
+            <input id="w7" type="button" class="b7" value="7" onclick="change_state(this)"/>
+            <input id="w8" type="button" class="b8" value="8" onclick="change_state(this)"/>
+            <input id="w9" type="button" class="b9" value="9" onclick="change_state(this)"/>
+            <input id="w10" type="button" class="b10" value="10" onclick="change_state(this)"/>
+            <input id="w11" type="button" class="b11" value="11" onclick="change_state(this)"/>
+            <input id="w12" type="button" class="b12" value="12" onclick="change_state(this)"/><br>
+            <label class="text5">请选词后在下方输入答案并提交：</label><br>
+            <input id="answer" type="text" class="text6"/>
+            <input id="submitting" type="button" onmousedown="mouseDown(this)" onmouseup="mouseUp(this)" class="submit_btn" value="提交" onclick="submit_answer()"/>
+        </div>
+    </div>
+</body>
+<script language="javascript" type="text/javascript">
+        function $(id) { return document.getElementById(id); }
+        var sec = 119;
+        $("rest_time").innerHTML = "剩余时间："+ String(sec+1)+"秒";
+        answering_number = 1;
+        $("w1").style.backgroundColor = "lightcyan"
+        $("w2").style.backgroundColor = "lightgreen"
+        $("w3").style.backgroundColor = "lightgreen"
+        $("w4").style.backgroundColor = "lightgreen"
+        $("w5").style.backgroundColor = "lightgreen"
+        $("w6").style.backgroundColor = "lightgreen"
+        $("w7").style.backgroundColor = "lightgreen"
+        $("w8").style.backgroundColor = "lightgreen"
+        $("w9").style.backgroundColor = "lightgreen"
+        $("w10").style.backgroundColor = "lightgreen"
+        $("w11").style.backgroundColor = "lightgreen"
+        $("w12").style.backgroundColor = "lightgreen"
+        var loc = location.href;
+	    var n1 = loc.length;
+	    var n2 = loc.indexOf("=");
+	    user_name = decodeURI(loc.substr(n2+1, n1-n2));
+	    if (n2 > 0){
+	        $("username").innerHTML = "用户名：" + user_name
+	    }
+	    var socket;
+	    var right_amount = 0;
+	    var see_answer_amount = 0;
+        window.onload = function connect(){
+            var host = "ws://127.0.0.1:9999/";
+            socket = new WebSocket(host);
+            var data;
+            timer();
+            try {
+	            socket.onopen = function (msg) {
+	                socket.send(encodeURI("06#0"));
+	            };
+	            socket.onmessage = function (msg) {
+	                message = decodeURI(msg.data);
+	                if (message == '回答正确') {
+	                    str = "w" + String(answering_number);
+                        $(str).style.backgroundColor = "gray";
+	                    right_amount += 1;
+	                    update_state()
+	                }
+	                else if (message == '回答错误') {
+	                    $("grade").innerHTML = "回答错误，当前得分："+Math.round(right_amount/0.12)+"分";
+	                    $("answer").value = "";
+	                }
+	                else if (message == '保存成功') {
+	                    alert("游戏结束！");
+	                    show_conclusion();
+	                }
+	                else {
+	                    data = message.split("/");
+	                    if (data[0] == "08"){
+	                        var str2 = "";
+	                        for (var j=0;j<data.length/2-1;j++){
+	                            str2 += data[2*j+1] + "，" + data[2*j+2] + "。"+"\n";
+	                        }
+	                        alert(str2);
+	                        see_answer_amount += 1;
+	                        str = "w" + String(answering_number);
+                            $(str).style.backgroundColor = "red";
+                            update_state()
+	                    }
+	                    else{
+	                        $("w1").value = data[0];
+	                        $("w2").value = data[1];
+	                        $("w3").value = data[2];
+	                        $("w4").value = data[3];
+	                        $("w5").value = data[4];
+	                        $("w6").value = data[5];
+	                        $("w7").value = data[6];
+	                        $("w8").value = data[7];
+	                        $("w9").value = data[8];
+	                        $("w10").value = data[9];
+	                        $("w11").value = data[10];
+	                        $("w12").value = data[11];
+	                    }
+	                }
+	            };
+	            socket.onerror = function (error) { alert("连接错误；Error："+ error.name); };
+	            socket.onclose = function (msg) {
+	                alert("连接关闭!");
+	            };
+	        }
+	        catch (ex) {
+	            log(ex);
+	        }
+        }
+        function show_conclusion(){
+            var str3 = user_name + "#";
+	        for (i=0;i<12;i++){
+                word_name = "w" + String(i+1);
+                if ($(word_name).style.backgroundColor == "red"){
+                    str3 += "查看了答案#";
+                }
+                else if ($(word_name).style.backgroundColor == "lightgreen"){
+                    str3 += "未回答#";
+                }
+                else{
+                    str3 += "回答正确#";
+                }
+             }
+             str3 += Math.round(right_amount/0.12);
+	         location.href="回答情况.html?"+"message=#"+str3;
+        }
+        function update_state(){
+            if (right_amount+see_answer_amount > 11){
+	            grade = "09#"+user_name+"#出口成诗#" + Math.round(right_amount/0.12);
+	            socket.send(encodeURI(grade));
+	        }
+	        $("prog").value = right_amount + 1 + see_answer_amount;
+            $("progressing").innerHTML = String(right_amount+1+see_answer_amount) + "/12";
+            $("grade").innerHTML = "回答正确，当前得分："+Math.round(right_amount/0.12)+"分";
+            for (i=0;i<12;i++){
+                str1 = "w" + String(i+1);
+                if ($(str1).style.backgroundColor == "lightgreen"){
+                    answering_number = i+1;
+                    $(str1).style.backgroundColor = "lightcyan";
+                    break;
+                 }
+            }
+            $("answer").value = "";
+        }
+        function see_answer(){
+            str = "w" + String(answering_number);
+            socket.send(encodeURI("08#"+$(str).value));
+        }
+        function timer(){
+            setInterval("show_time()", 1000);
+        }
+        function show_time(){
+            $("rest_time").innerHTML = "剩余时间："+ String(sec--)+"秒";
+            if (sec == 0){
+                grade = "09#"+user_name+"#出口成诗#" + Math.round(right_amount/0.12);
+	            socket.send(encodeURI(grade));
+            }
+        }
+        function mouseDown(e){
+            e.style.backgroundColor = "lightcyan";
+        };
+        function mouseUp(e){
+            e.style.backgroundColor = "peachpuff";
+        };
+        function submit_answer(){
+            str = "w" + String(answering_number);
+            socket.send(encodeURI("07#"+$(str).value+"#"+$("answer").value));
+        }
+        function change_state(word){
+            if ($(word.getAttribute("id")).style.backgroundColor == "lightgreen"){
+                str = "w" + String(answering_number);
+                if ($(str).style.backgroundColor == "lightcyan"){
+                    $(str).style.backgroundColor = "lightgreen";
+                }
+                $(word.getAttribute("id")).style.backgroundColor = "lightcyan";
+                num = word.getAttribute("id").substr(1, word.getAttribute("id").length);
+                answering_number = Number(num)
+            }
+        }
+        function say_poet(){
+            location.href="出口成诗.html?"+"username="+user_name;
+        }
+        function click_poet(){
+            location.href="点字成诗.html?"+"username="+user_name;
+        }
+        function guess_poet(){
+            location.href="你说我猜.html?"+"username="+user_name;
+        }
+        function find_notes(){
+            location.href="查询记录.html?"+"username="+user_name;
+        }
+</script>
+</html>

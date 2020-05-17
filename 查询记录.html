@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="查询记录.css"/>
+    <title>诗词大赛小游戏</title>
+</head>
+<body>
+    <div class="game_bg" style="background-image: url(./image/背景6.jpg);"></div>
+    <div>
+        <div class="game_mode">
+            <br>
+            <legend class="text0">诗词大赛</legend><br>
+            <p id="username" class="text1">用户名：</p><br>
+            <input type="button" class="btn1" value="出口成诗" onclick="say_poet()"/><br>
+            <input type="button" class="btn2" value="点字成诗" onclick="click_poet()"/><br>
+            <input type="button" class="btn3" value="你说我猜" onclick="guess_poet()"/><br>
+            <input type="button" class="btn4" value="查询成绩记录" onclick="find_notes()"/><br>
+        </div>
+        <div id="notes" class="workspace">
+            <br><label class="text2">游戏记录：</label><br><br>
+        </div>
+    </div>
+</body>
+<script language="javascript" type="text/javascript">
+        function $(id) { return document.getElementById(id); }
+        var loc = location.href;
+	    var n1 = loc.length;
+	    var n2 = loc.indexOf("=");
+	    user_name = decodeURI(loc.substr(n2+1, n1-n2));
+	    if (n2 > 0){
+	        $("username").innerHTML = "用户名：" + user_name
+	    }
+	    var socket;
+        window.onload = function connect(){
+            var host = "ws://127.0.0.1:9999/";
+            socket = new WebSocket(host);
+            var data;
+            try {
+	            socket.onopen = function (msg) {
+	                socket.send(encodeURI("10#"+user_name));
+	            };
+	            socket.onmessage = function (msg) {
+	                message = decodeURI(msg.data);
+                    if (message == '删除成功') {
+	                    location.href="查询记录.html?"+"username="+user_name;
+	                }
+	                else if (message == '无记录') {
+	                    $("notes").insertAdjacentHTML('beforeEnd','<label class="text3">该账户当前没有游戏记录！</label>');
+	                }
+	                else {
+	                    $("notes").insertAdjacentHTML('beforeEnd','<label class="text3">游戏模式</label>');
+	                    $("notes").insertAdjacentHTML('beforeEnd','<label class="text4">游戏时间</label>');
+	                    $("notes").insertAdjacentHTML('beforeEnd','<label class="text6">成绩</label><br><br>');
+	                    data = message.split("/");
+	                    for (var j=0;j<data.length-1;j++){
+	                        details = data[j].split(".");
+	                        time0 = details[1]+"/"+details[2]+"/"+details[3];
+	                        $("notes").insertAdjacentHTML('beforeEnd','<input class="text5" disabled="true" value='+details[0]+'>');
+	                        $("notes").insertAdjacentHTML('beforeEnd','<input class="text5" disabled="true" value='+time0+'>');
+	                        $("notes").insertAdjacentHTML('beforeEnd','<input class="text5" disabled="true" value='+details[4]+'>');
+	                        $("notes").insertAdjacentHTML('beforeEnd','<input type="button" class="btn" id='+j+' value="删除该记录" onclick="delete0(this)"><br><br>');
+	                    }
+	                    $("notes").insertAdjacentHTML('beforeEnd','<input type="button" class="btn" id="clear_all" value="清空记录" onclick="delete1()">');
+	                }
+	            };
+	            socket.onerror = function (error) { alert("连接错误；Error："+ error.name); };
+	            socket.onclose = function (msg) {
+	                alert("连接关闭!");
+	            };
+	        }
+	        catch (ex) {
+	            log(ex);
+	        }
+        }
+        async function delete0(num){
+            var str = "11#" + user_name + "#" + num.getAttribute("id");
+	        socket.send(encodeURI(str));
+        }
+        async function delete1(){
+            var str = "11#" + user_name + "#all";
+	        socket.send(encodeURI(str));
+        }
+        function say_poet(){
+            location.href="出口成诗.html?"+"username="+user_name;
+        }
+        function click_poet(){
+            location.href="点字成诗.html?"+"username="+user_name;
+        }
+        function guess_poet(){
+            location.href="你说我猜.html?"+"username="+user_name;
+        }
+        function find_notes(){
+            location.href="查询记录.html?"+"username="+user_name;
+        }
+</script>
+</html>
